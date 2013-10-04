@@ -166,7 +166,7 @@ void ERModel::saveFile(){
 		
 		for (int i = 0; i < _connections.size();i = i+3)
 		{
-			myfile <<setiosflags(ios::left) <<setw(4)<< _connections[i]->getID() <<"  "<< _connections[i+1]->getID()<< "," << _connections[i+2]->getID()<<endl;
+			myfile <<setiosflags(ios::left) <<setw(3)<< _connections[i]->getID() << _connections[i+1]->getID()<< "," << _connections[i+2]->getID()<<endl;
 		}
 		//myfile << endl;
 		int entityPresentIndex = 0;//Entity count
@@ -179,14 +179,13 @@ void ERModel::saveFile(){
 			}
 			else 
 			{
-				if (i==entityPresentIndex-1)
-				{
-					myfile << _primaryKeys[i]->getID()<<",";
-				}
-				else
-				{
+				
+				if (i == entityPresentIndex+1)
 					myfile << _primaryKeys[i]->getID();
-				}
+				else
+					myfile <<"," << _primaryKeys[i]->getID();
+					//myfile << _primaryKeys[i]->getID();
+				
 				
 			}
 			
