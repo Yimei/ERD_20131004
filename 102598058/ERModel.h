@@ -11,7 +11,7 @@ class ERModel{
 public:
 	ERModel();
 	virtual ~ERModel();
-	void addNode(string);
+	void addNode();
 	string getWholeName(string);
 	void showTable();
 	void setPrimaryKey();
@@ -40,25 +40,33 @@ public:
 	void addConnectionFromFile(vector<string>);
 	void addPrimaryKeyFromFile(vector<string>);
 	
-
-	
 	int getPresentID();
 	void initialPresentID();
 	void displayComponentTable();
 	void displayConnectionTable();
 	void updateID();
 	Component* convertIdtoComponent(int);
+	void deleteComponent();
+	bool existId(int);
+	void checkDeleteComponentIDLoop();
+	void deleteComponentsVector();
+	void connectTwoNode();
+	void checkAddConnectionNodeOneLoop();
+	bool checkAddConnectionNodeTwo();
+	void setConnectionNodes(int);
+	bool checkExistConnection(vector<int>);//連過的兩個相同node不可再連
+	void createConnector(vector<int>);
 private:
 	vector<Component*> _components;
 	vector<Component*> _connections;//[0]connection [1]node1 [2]node2 [3]connection...
 	vector<Component*> _primaryKeys;//[0]entity [1]attribute1 [2]attribute2 [3]entity...
 
 	int _id;
-	string _firstNodeId;
+	
 	string _secondNodeId;
 	int _nodeOne;
 	int _nodeTwo;
-	ComponentFactory* _componentFactory;
+	ComponentFactory* componentFactory;
 	int _cardinality;
 	string _entityId;
 	Component* _entityTemp;
@@ -74,6 +82,9 @@ private:
 	vector<string> splitStringItem;
 	int _presentID;
 	int id;
-	
+	string _deleteId;
+	string nodeIDOne;
+	string nodeIDTwo;
+	vector<int> _connectionNodesVector;//[0]node1 [1]node2
 };
 #endif

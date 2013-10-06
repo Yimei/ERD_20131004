@@ -3,25 +3,22 @@
 #include "TextUI.h"
 #include "ERModel.h"
 using namespace std;
-#define MENU_ONE "3. Add a node\n";
-#define MENU_TWO "4. Connect two nodes\n";
-#define MENU_THREE "5. Display the current diagram\n";
-#define MENU_FOUR "6. Set a primary key\n";
-#define MENU_FIVE "7. Display the table\n";
-#define MENU_SIX "11. Exit\n> ";
-#define WKONDYWTA "What kind of node do you want to add?\n[A]Attribute [E]Entity [R]Relation\n> ";
+//#define WKONDYWTA "What kind of node do you want to add?\n[A]Attribute [E]Entity [R]Relation\n> ";
 TextUI::TextUI(){
 	eRModel = new ERModel();
 }
 void TextUI::displayMenu(){
-	cout << "1. Load ER diagram file\n";
-	cout << "2. Save ER diagram file\n";
-	cout << MENU_ONE
-	cout << MENU_TWO;
-	cout << MENU_THREE;
-	cout << MENU_FOUR;
-	cout << MENU_FIVE;
-	cout << MENU_SIX;
+	cout << "1. Load ER diagram file" << endl;
+	cout << "2. Save ER diagram file" << endl;
+	cout << "3. Add a node" << endl;
+	cout << "4. Connect two nodes" << endl;
+	cout << "5. Display the current diagram" << endl;
+	cout << "6. Set a primary key" << endl;
+	cout << "7. Display the table" << endl;
+	cout << "8. Delete a component"<< endl;
+	cout << "9. Undo" << endl;
+	cout << "10. Redo" << endl;
+	cout << "11. Exit" << endl <<"> ";
 	processCommand();
 }
 void TextUI::processCommand(){
@@ -31,33 +28,30 @@ void TextUI::processCommand(){
 	cin >> _command;
 	switch (_command){
 	case 1:
+		eRModel = new ERModel();
 		eRModel->loadFile();
 		eRModel->displayComponentTable();
 		eRModel->displayConnectionTable();
 		displayMenu();
 	case 2:
 		eRModel->saveFile();
-
+		displayMenu();
 	case 3: 
-		cout << "What kind of node do you want to add?\n[A]Attribute [E]Entity [R]Relation" << endl<<"> ";
-		cin >> _type;
-		while ((_type != "A")&&(_type != "E")&&(_type != "R"))
-		{
-			cout << "You entered an invalid node. Please enter a valid one again.\n[A]Attribute [E]Entity [R]Relation" << endl<<"> ";
-			cin >> _type;
-		}
-		eRModel->addNode(_type);
+		eRModel->addNode();
+		eRModel->displayComponentTable();
 		displayMenu();
 	case 4:
-		cout << "Please enter the first node ID "<< endl << "> ";
-		eRModel->checkFirstNodeId();
-		cout << "Please enter the second node ID "<< endl << "> ";
-		eRModel->checkSecondNodeId();
+		eRModel->connectTwoNode();
+		//eRModel->displayConnectionTable();
+		//eRModel->checkFirstNodeId();
+		//cout << "Please enter the second node ID "<< endl << "> ";
+		//eRModel->checkSecondNodeId();
 		
-		eRModel->addConnection(eRModel->getFirstNode(),eRModel->getSecondNode());
+		//eRModel->addConnection(eRModel->getFirstNode(),eRModel->getSecondNode());
 		displayMenu();
 	case 5:
-		eRModel->getTable();
+		eRModel->displayComponentTable();
+		eRModel->displayConnectionTable();
 		displayMenu();
 	case 6:
 		eRModel->setPrimaryKey();
@@ -69,6 +63,9 @@ void TextUI::processCommand(){
 	case 7:
 		eRModel->displayTable();
 		displayMenu();
+	case 8:
+		eRModel->deleteComponent();
+
 	case 11:
 		cout << "Goodbye!" <<endl;
 

@@ -4,10 +4,13 @@
 using namespace std;
 
 Relationship::Relationship():Node(){
-
+	for (int i = 0; i < connectedEntity.size();i++)
+	{
+		connectedEntity[i] = NULL;
+	}
 }
 void Relationship::connectTo(Component* component){
-	this->setConnections(component);
+	//this->setConnections(component);
 }
 bool Relationship::canConnectTo(Component* component){
 	
@@ -15,27 +18,15 @@ bool Relationship::canConnectTo(Component* component){
 	{
 		return false;
 	}
-	else if(_connectionsVector.size()==2)
+	else if(connectedEntity.size() == 2)
 	{
 		return false;
 	}
 	else  
 	{
-		hadConnected(component);
+		connectedEntity.push_back(component);
+		return true;
 	}
-}
-bool Relationship::hadConnected(Component* component)
-{
-	for (int i = 0; i < _connectionsVector.size();i++)
-	{
-		if (_connectionsVector[i]->getID() == component->getID())
-		{
-			cout << "The node '" << this->getID() << "' has already been connected to component '" << component->getID() << "'." << endl;
-			return false;
-		}
-	}
-	_connectionsVector.push_back(component);
-	return true;
 }
 Relationship::~Relationship(){
 

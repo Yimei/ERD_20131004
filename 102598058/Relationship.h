@@ -10,8 +10,8 @@ public:
 	virtual ~Relationship();
 	void connectTo(Component* component);
 	bool canConnectTo(Component* component);
-	bool hadConnected(Component* component);
+	
 private:
-	vector<Component*> _connectionsVector;
+	vector<Component*> connectedEntity;
 };
 #endif

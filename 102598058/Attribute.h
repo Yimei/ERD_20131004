@@ -12,5 +12,6 @@ public:
 	bool canConnectTo(Component* component);
 private:
 	Connector* connector;
+	Component* connectedEntity;
 };
 #endif

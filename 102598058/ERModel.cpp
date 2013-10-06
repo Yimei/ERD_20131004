@@ -20,7 +20,7 @@ ERModel::ERModel(){
 ERModel::~ERModel()
 {
 	
-	delete _componentFactory;
+	delete componentFactory;
 	delete _entityTemp;
 	delete _entityAttribute;
 	
@@ -37,10 +37,42 @@ ERModel::~ERModel()
 		delete _attributeWithOutPK[i];
 	}
 }
+void ERModel::deleteComponent()
+{
+	cout << "Please enter the component ID" << endl <<"> ";
+	checkDeleteComponentIDLoop();
+	  
+
+	cout << "The component '" << atoi(_deleteId.c_str()) <<"' has been deleted."<<endl;
+}
+void ERModel::checkDeleteComponentIDLoop()
+{
+	cin >> _deleteId;
+	if (existId(atoi(_deleteId.c_str())))
+	{
+		return;
+	}
+	else
+	{
+		cout << "The component ID You entered does not exist. Please enter a valid one again." <<endl;
+		checkDeleteComponentIDLoop();
+	}
+}
+bool ERModel::existId(int id)
+{
+	for(int i = 0; i < _components.size();i++)
+	{
+		if(_components[i]->getID() == id)
+		{
+			return true;
+		}
+	}
+	return false;	
+}
 void ERModel::addComponentsFromFile(vector<string> nodeVectorFromFile)
 {
-		_componentFactory = new ComponentFactory();
-		Component* component = _componentFactory->createComponent(nodeVectorFromFile[0].substr(0,1));
+		componentFactory = new ComponentFactory();
+		Component* component = componentFactory->createComponent(nodeVectorFromFile[0].substr(0,1));
 		component->setID(id);
 		updateID();
 		component->setType(nodeVectorFromFile[0].substr(0,1));
@@ -60,10 +92,10 @@ void ERModel::updateID()
 }
 void ERModel::addConnectionFromFile(vector<string> connectionVectorFromFile)
 {
-	_componentFactory = new ComponentFactory();
+	componentFactory = new ComponentFactory();
 	for (int i = 0; i < connectionVectorFromFile.size();i++)
 	{
-		Component* component = _componentFactory->createComponent(convertIdtoComponent(atoi(connectionVectorFromFile[i].c_str()))->getType());
+		Component* component = componentFactory->createComponent(convertIdtoComponent(atoi(connectionVectorFromFile[i].c_str()))->getType());
 		component->setID(atoi(connectionVectorFromFile[i].c_str()));
 		component->setType(convertIdtoComponent(atoi(connectionVectorFromFile[i].c_str()))->getType());
 		component->setText(convertIdtoComponent(atoi(connectionVectorFromFile[i].c_str()))->getText());
@@ -79,11 +111,18 @@ Component* ERModel::convertIdtoComponent(int id)
 		if (id == _components[i]->getID())
 			return _components[i];
 	}
+	return NULL;
+}
+void ERModel::deleteComponentsVector()
+{
+	for(int i = 0; i < _components.size();i++)
+	{
+		delete _components[i];
+	}
 }
 void ERModel::loadFile(){
 	string _filePath;
 	string line;
-	_components.clear();
 	cout << "Please input a file path: "<<endl;
 	cin >> _filePath;
 	ifstream myfile(_filePath);
@@ -199,31 +238,143 @@ void ERModel::saveFile(){
 }
 void ERModel::addPrimaryKeyFromFile(vector<string> primaryKeyVectorFromFile)
 {
-	_componentFactory = new ComponentFactory();
+	componentFactory = new ComponentFactory();
 	for (int i = 0; i< primaryKeyVectorFromFile.size();i++)
 	{
-		Component* component = _componentFactory->createComponent(convertIdtoComponent(atoi(primaryKeyVectorFromFile[i].c_str()))->getType());
+		Component* component = componentFactory->createComponent(convertIdtoComponent(atoi(primaryKeyVectorFromFile[i].c_str()))->getType());
 		component->setID(atoi(primaryKeyVectorFromFile[i].c_str()));
 		component->setType(convertIdtoComponent(atoi(primaryKeyVectorFromFile[i].c_str()))->getType());
 		component->setText(convertIdtoComponent(atoi(primaryKeyVectorFromFile[i].c_str()))->getText());
 		_primaryKeys.push_back(component);
 	}
 }
-
-void ERModel::addNode(string type){
-	string _text;
+void ERModel::addNode(){
+	string type;
+	cout << "What kind of node do you want to add?\n[A]Attribute [E]Entity [R]Relation" << endl<<"> ";
+	cin >> type;
+	while ((type != "A")&&(type != "E")&&(type != "R"))
+	{
+		cout << "You entered an invalid node. Please enter a valid one again.\n[A]Attribute [E]Entity [R]Relation" << endl<<"> ";
+		cin >> type;
+	}
+	string text;
 	cout<< "Enter the name of this node:" << endl<<"> ";
-	cin >> _text;
-	_componentFactory = new ComponentFactory();
-	cout << "A node [" << getWholeName(type) << "]" << " has been added. ID: " << _id << ", Name: " << _text << endl;
-	Component* component = _componentFactory->createComponent(type);
+	cin >> text;
+	componentFactory = new ComponentFactory();
+	Component* component = componentFactory->createComponent(type);
 	component->setID(id);
 	updateID();
-	//_id++;
-	component->setText(_text);
+	component->setText(text);
 	component->setType(type);
 	_components.push_back(component);
-	showTable();
+	cout << "A node [" << getWholeName(type) << "]" << " has been added. ID: " << id-1 << ", Name: " << text << endl;
+}
+void ERModel::connectTwoNode()
+{
+	cout << "Please enter the first node ID "<< endl << "> ";
+	checkAddConnectionNodeOneLoop();
+	setConnectionNodes(atoi(nodeIDOne.c_str()));
+	cout << "Please enter the second node ID "<< endl << "> ";
+	if (checkAddConnectionNodeTwo()) 
+	{
+		setConnectionNodes(atoi(nodeIDTwo.c_str()));
+		if (_connectionNodesVector[1] == _connectionNodesVector[0])//itself
+		{
+			cout << "The Node '" <<  _connectionNodesVector[1] <<"' cannot be connected to itself." << endl;
+			_connectionNodesVector.clear();
+		}//same type
+		else if (_components[_connectionNodesVector[1]]->getType() == _components[_connectionNodesVector[0]]->getType())
+		{
+			cout << "The node '" <<  _connectionNodesVector[1] <<"' cannot be connected by the node '"<<  _connectionNodesVector[0] <<"'."<<endl; 
+		    _connectionNodesVector.clear();
+		}//已連過同一條connector
+		else if (checkExistConnection(_connectionNodesVector))//true: 已存在
+		{
+			cout << "The node '" << _connectionNodesVector[1]<<"' has already been connected to node '" << _connectionNodesVector[0] <<"'."<<endl;
+		    _connectionNodesVector.clear();
+		}
+		else if (!(_components[_connectionNodesVector[1]]->canConnectTo(_components[_connectionNodesVector[0]]))&&(_components[_connectionNodesVector[0]]->canConnectTo(   _components[_connectionNodesVector[1]])))
+		{
+			cout << "The node '"<<_connectionNodesVector[1]<<"' cannot be connected by the node '"<< _connectionNodesVector[0]<<"'."<<endl;
+		    _connectionNodesVector.clear();
+		}
+		else
+		{
+			createConnector(_connectionNodesVector);
+			_connections.push_back(_components[_connectionNodesVector[0]]);
+			_connections.push_back(_components[_connectionNodesVector[1]]);
+			cout << "The node '"<<_connectionNodesVector[1]<<"' has been connected to the node '"<<_connectionNodesVector[0]<<"'."<<endl;
+			displayConnectionTable();
+			_connectionNodesVector.clear();
+		}
+	}
+	else
+	{
+		cout << "The node ID you entered does not exist." <<endl;
+		_connectionNodesVector.clear();
+	}
+
+}
+void ERModel::createConnector(vector<int> connectionNodes)
+{
+	componentFactory = new ComponentFactory();
+	Component* component = componentFactory->createComponent("C");
+	component->setID(id);
+	updateID();
+	component->setType("C");
+	if ((_components[connectionNodes[0]]->getType() == "R") || (_components[connectionNodes[1]]->getType() == "R"))
+	{
+		string cardinality;
+		cout << "Enter the type of the cardinality:" <<endl<<"[0]1 [1]N"<<endl<<"> ";
+		cin >> cardinality;
+		if (atoi(cardinality.c_str()) == 0)
+		{
+			component->setText("1");
+		}
+		else if (atoi(cardinality.c_str()) == 1)
+		{
+			component->setText("N");
+		}
+		else
+		{
+			cout << "Wrong cardinality."<<endl;
+		}
+	}
+	else
+	{
+		component->setText(" ");
+	}
+	_components.push_back(component);
+
+	_connections.push_back(component);
+}
+bool ERModel::checkExistConnection(vector<int> connectionNodes)
+{
+	for (int i = 0; i < _connections.size(); i++)
+	{
+		if (i%3 != 0)
+		{
+			if (_connections[i]->getID() == connectionNodes[0])
+			{
+				if (_connections[i+1]->getID() == connectionNodes[1])
+				{
+					return true;
+				}
+			}
+			else if (_connections[i]->getID() == connectionNodes[1])
+			{
+				if (_connections[i+1]->getID() == connectionNodes[0])
+				{
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+}
+void ERModel::setConnectionNodes(int nodeOne)
+{
+	_connectionNodesVector.push_back(nodeOne);
 }
 string ERModel::getWholeName(string type){ 
 	if (type == "A")
@@ -247,21 +398,60 @@ void ERModel::showTable()
 	}
 	cout << "----------------------------------" << endl;
 }
-void ERModel::checkFirstNodeId(){
-	
-	cin >> _firstNodeId;
-	if(_firstNodeId == "0")
+//void ERModel::checkFirstNodeId(){
+//	
+//	if(_firstNodeId == "0")
+//	{
+//		_nodeOne = 0;
+//	}
+//	else if (atoi(_firstNodeId.c_str()) >= _components.size() || atoi(_firstNodeId.c_str())==0)//不在vector內或輸入string
+//	{
+//		cout << "The node ID you entered does not exist. Please enter a valid one again." << endl << "> ";
+//		checkFirstNodeId();
+//	}
+//	else
+//	{
+//		_nodeOne = atoi(_firstNodeId.c_str());
+//	}
+//}
+bool ERModel::checkAddConnectionNodeTwo()
+{
+	cin >> nodeIDTwo;
+	if (nodeIDTwo == "0")//string 不用轉換前就是0
 	{
-		_nodeOne = 0;
+		return true;
 	}
-	else if (atoi(_firstNodeId.c_str()) >= _components.size() || atoi(_firstNodeId.c_str())==0)//不在vector內或輸入string
+	else 
 	{
-		cout << "The node ID you entered does not exist. Please enter a valid one again." << endl << "> ";
-		checkFirstNodeId();
+		for (int i = 0; i < _components.size(); i++)
+		{
+			if ((atoi(nodeIDTwo.c_str()) == _components[i]->getID()) && (atoi(nodeIDTwo.c_str())!=0))
+			{
+				return true;
+			}
+		}
+		cout << "The node ID you entered does not exist."<< endl;
+		return false;
 	}
-	else
+}
+void ERModel::checkAddConnectionNodeOneLoop()
+{
+	cin >> nodeIDOne;
+	if (nodeIDOne == "0")//string 不用轉換前就是0
 	{
-		_nodeOne = atoi(_firstNodeId.c_str());
+		return;
+	}
+	else 
+	{
+		for (int i = 0; i < _components.size(); i++)
+		{
+			if ((atoi(nodeIDOne.c_str()) == _components[i]->getID()) && (atoi(nodeIDOne.c_str())!=0))
+			{
+				return;
+			}
+		}
+		cout << "The node ID you entered does not exist. Please enter a valid one again." <<endl<<"> ";
+		checkAddConnectionNodeOneLoop();
 	}
 }
 void ERModel::checkSecondNodeId()
@@ -281,7 +471,6 @@ void ERModel::checkSecondNodeId()
 		_nodeTwo = atoi(_secondNodeId.c_str());
 	}
 }
-
 void ERModel::addConnection(Component* nodeOne, Component* nodeTwo)
 {
 	if (nodeOne->getID() == nodeTwo->getID()) //自己不能連 含Connector連Connector
@@ -296,7 +485,7 @@ void ERModel::addConnection(Component* nodeOne, Component* nodeTwo)
 	{
 		nodeOne->connectTo(nodeTwo);//setConnectionsNum() both
 		nodeTwo->connectTo(nodeOne);
-		Component* component = _componentFactory->createComponent("C");
+		Component* component = componentFactory->createComponent("C");
 		component->setID(id);
 		updateID();
 		component->setText("connector");
@@ -380,7 +569,7 @@ void ERModel::showAttributeTable(string entityID)
 	cout << "Type | ID | Name  " << endl;
 	cout << "-----+----+----------------------" << endl;
 	_entityTemp = _components[atoi(entityID.c_str())];
-	for (int i = 0; i < _entityTemp->getConnections().size();i++)
+	/*for (int i = 0; i < _entityTemp->getConnections().size();i++)
 	{
 			_entityAttribute = _entityTemp->getConnections()[i];
 			if(_entityAttribute->getType() == "A")
@@ -388,7 +577,7 @@ void ERModel::showAttributeTable(string entityID)
 				cout << "  " << _entityAttribute->getType() << "  |  " << _entityAttribute->getID() << "  |  " << _entityAttribute->getText()	<< endl;
 				_attributesId.push_back(_entityAttribute->getID());
 			}
-	}
+	}*/
 	cout << "------------------------------------" << endl;
 	cout << "Enter the IDs of the attributes (use a comma to separate two attributes):" << endl << "> ";
 }
@@ -417,7 +606,6 @@ void ERModel::checkPrimaryKey()
 		}
 	}
 }
-
 //void ERModel::splitString(string string, string reference)
 //{
 //

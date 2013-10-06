@@ -7,7 +7,7 @@ Connector::Connector():Component(){
 	_nodeTwoConnectionId=0;
 }
 void Connector::connectTo(Component* component){
-	this->setConnections(component);
+	//this->setConnections(component);
 }
 bool Connector::canConnectTo(Component* component){
 	return false;
