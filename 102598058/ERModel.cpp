@@ -193,7 +193,6 @@ void ERModel::saveFile(){
 	string _fileName;
 	cout << "Please input the file name: ";
 	cin >> _fileName;//輸出的檔名路徑
-
 	ofstream myfile(_fileName);
 	if(myfile.is_open())
 	{
@@ -207,7 +206,6 @@ void ERModel::saveFile(){
 		{
 			myfile <<setiosflags(ios::left) <<setw(3)<< _connections[i]->getID() << _connections[i+1]->getID()<< "," << _connections[i+2]->getID()<<endl;
 		}
-		//myfile << endl;
 		int entityPresentIndex = 0;//Entity count
 		for (int i = 0; i < _primaryKeys.size();i++)
 		{
@@ -223,15 +221,8 @@ void ERModel::saveFile(){
 					myfile << _primaryKeys[i]->getID();
 				else
 					myfile <<"," << _primaryKeys[i]->getID();
-					//myfile << _primaryKeys[i]->getID();
-				
-				
 			}
-			
 		}
-
-		/*myfile << "This is a line.\n" <<endl;
-		myfile << "This is another line.\n"<<endl;*/
 		myfile.close();
 	}
 	else cout << "Unable to open file";
@@ -300,10 +291,10 @@ void ERModel::connectTwoNode()
 		}
 		else
 		{
+			cout << "The node '"<<_connectionNodesVector[1]<<"' has been connected to the node '"<<_connectionNodesVector[0]<<"'."<<endl;
 			createConnector(_connectionNodesVector);
 			_connections.push_back(_components[_connectionNodesVector[0]]);
 			_connections.push_back(_components[_connectionNodesVector[1]]);
-			cout << "The node '"<<_connectionNodesVector[1]<<"' has been connected to the node '"<<_connectionNodesVector[0]<<"'."<<endl;
 			displayConnectionTable();
 			_connectionNodesVector.clear();
 		}
@@ -313,7 +304,6 @@ void ERModel::connectTwoNode()
 		cout << "The node ID you entered does not exist." <<endl;
 		_connectionNodesVector.clear();
 	}
-
 }
 void ERModel::createConnector(vector<int> connectionNodes)
 {
@@ -325,27 +315,30 @@ void ERModel::createConnector(vector<int> connectionNodes)
 	if ((_components[connectionNodes[0]]->getType() == "R") || (_components[connectionNodes[1]]->getType() == "R"))
 	{
 		string cardinality;
+		string cardinalityTemp;
 		cout << "Enter the type of the cardinality:" <<endl<<"[0]1 [1]N"<<endl<<"> ";
 		cin >> cardinality;
 		if (atoi(cardinality.c_str()) == 0)
 		{
 			component->setText("1");
+			cardinalityTemp = "1";
 		}
 		else if (atoi(cardinality.c_str()) == 1)
 		{
 			component->setText("N");
+			cardinalityTemp = "N";
 		}
 		else
 		{
 			cout << "Wrong cardinality."<<endl;
 		}
+		cout << "Its cardinality of the relationship is '"<< cardinalityTemp << "'."<< endl;
 	}
 	else
 	{
 		component->setText(" ");
 	}
 	_components.push_back(component);
-
 	_connections.push_back(component);
 }
 bool ERModel::checkExistConnection(vector<int> connectionNodes)
@@ -398,22 +391,6 @@ void ERModel::showTable()
 	}
 	cout << "----------------------------------" << endl;
 }
-//void ERModel::checkFirstNodeId(){
-//	
-//	if(_firstNodeId == "0")
-//	{
-//		_nodeOne = 0;
-//	}
-//	else if (atoi(_firstNodeId.c_str()) >= _components.size() || atoi(_firstNodeId.c_str())==0)//不在vector內或輸入string
-//	{
-//		cout << "The node ID you entered does not exist. Please enter a valid one again." << endl << "> ";
-//		checkFirstNodeId();
-//	}
-//	else
-//	{
-//		_nodeOne = atoi(_firstNodeId.c_str());
-//	}
-//}
 bool ERModel::checkAddConnectionNodeTwo()
 {
 	cin >> nodeIDTwo;
@@ -525,61 +502,33 @@ void ERModel::addConnection(Component* nodeOne, Component* nodeTwo)
 	}
 }
 void ERModel::setPrimaryKey(){
-	cout << "Entities:" << endl;
-	cout << "---------------------------------" << endl;
-	cout << "Type | ID | Name  " << endl;
-	cout << "-----+----+----------------------" << endl;
-	for (int i = 0; i < _components.size();i++)
-	{
-		if (_components[i]->getType() == "E")
-		{
-			cout << "  " << _components[i]->getType() << "  |  " << _components[i]->getID() << "  |  " << _components[i]->getText()	<< endl;
-		}
-	}
-	cout << "------------------------------------" << endl;
 	cout << "Enter the ID of the entity:" << endl << "> ";
-}
-void ERModel::checkEntity()
-{
-	cin >> _entityId;
-	if ((_entityId == "0") && _components[0]->getType() == "E")
-	{
-		cout << "Attributes of the entity '" << _entityId << "' " << endl;
-	}
-	else if (atoi(_entityId.c_str()) == 0) // 是字串
-	{
-		cout << "The node ID you entered does not exist. Please enter a valid one again." << endl << "> "<< endl;
-		
-		checkEntity();
-	}
-	else if(_components[atoi(_entityId.c_str())]->getType() != "E")
-	{
-		cout << "The node '" << _entityId << "' is not an entity. Please enter a valid one again." << endl << "> "<< endl;
-		checkEntity();
-	}
-	else
-	{
-		cout << "Attributes of the entity '" << _entityId << "' " << endl;
-	}
-	showAttributeTable(_entityId);
-}
-void ERModel::showAttributeTable(string entityID)
-{
-	cout << "---------------------------------" << endl;
-	cout << "Type | ID | Name  " << endl;
-	cout << "-----+----+----------------------" << endl;
-	_entityTemp = _components[atoi(entityID.c_str())];
-	/*for (int i = 0; i < _entityTemp->getConnections().size();i++)
-	{
-			_entityAttribute = _entityTemp->getConnections()[i];
-			if(_entityAttribute->getType() == "A")
-			{
-				cout << "  " << _entityAttribute->getType() << "  |  " << _entityAttribute->getID() << "  |  " << _entityAttribute->getText()	<< endl;
-				_attributesId.push_back(_entityAttribute->getID());
-			}
-	}*/
-	cout << "------------------------------------" << endl;
+	checkEntityLoop();
+	displayAttributeOfEntity();
 	cout << "Enter the IDs of the attributes (use a comma to separate two attributes):" << endl << "> ";
+	checkPrimaryKeyLoop();
+}
+bool ERModel::checkPrimaryKeyLoop()
+{
+	string PKString;
+	cin >> PKString;
+	vector<Component*> pkTemp = splitString(PKString,",");
+	for (int i = 0; i < pkTemp.size(); i++)
+	{
+		Component* entityTemp =  _components[getPKEntity()];
+		for (int j = 0; j < entityTemp->getConnections().size();j++)
+		{
+			if (pkTemp[i]->getID() == entityTemp->getConnections[j]->getID())
+			{
+				
+			}
+			else
+			{
+				
+			}
+		}
+		
+	}
 }
 void ERModel::checkPrimaryKey()
 {
@@ -605,6 +554,68 @@ void ERModel::checkPrimaryKey()
 			checkPrimaryKey();
 		}
 	}
+}
+void ERModel::displayAttributeOfEntity()
+{
+	Component* entityTemp;
+	entityTemp = _components[getPKEntity()];
+	cout << "Attributes of the entity '"<< getPKEntity() <<"'"<<endl;
+	cout << "---------------------------------" << endl;
+	cout << "Type | ID | Name  " << endl;
+	cout << "-----+----+----------------------" << endl;
+	for (int i = 0; i < entityTemp.getConnections().size();i++)
+	{
+		cout << "  " << entityTemp.getConnections()[i]->getType() << "  |  " << entityTemp.getConnections()[i]->getID() << "  |  " << entityTemp.getConnections()[i]->getText()<< endl;
+	}
+	cout << "------------------------------------" << endl;
+}
+void ERModel::checkEntityLoop()
+{
+	string entityId;
+	cin >> entityId;
+	if ((entityId == "0") && (_components[0]->getType()=="E"))
+	{
+		setPKEntity(atoi(entityId.c_str()));
+		return;
+	}
+	else if (atoi(entityId.c_str()) == 0) //是字串
+	{
+		cout << "The node ID you entered does not exist. Please enter a valid one again." << endl << "> "<< endl;
+		checkEntityLoop();
+	}
+	else if (_components[atoi(entityId.c_str())]->getType() != "E")
+	{
+		cout << "The node '" << entityId << "' is not an entity. Please enter a valid one again." << endl << "> "<< endl;
+		checkEntityLoop();
+	}
+	else
+	{
+		setPKEntity(atoi(entityId.c_str()));
+		return;
+	}
+}
+void ERModel::setPKEntity(int entityid)
+{
+	entityID = entityid;
+}
+int ERModel::getPKEntity()
+{
+	return entityID;
+}
+void ERModel::displayEntityTable()
+{
+	cout << "Entities:" << endl;
+	cout << "---------------------------------" << endl;
+	cout << "Type | ID | Name  " << endl;
+	cout << "-----+----+----------------------" << endl;
+	for (int i = 0; i < _primaryKeys.size();i++)
+	{
+		if (_primaryKeys[i]->getType() == "E")
+		{
+			cout <<"  "<<_primaryKeys[i]->getType()<< "  |  "<<_primaryKeys[i]->getID()<<"  |  "<< _primaryKeys[i]->getText()<<endl;
+		}
+	}
+	cout << "---------------------------------" << endl;
 }
 //void ERModel::splitString(string string, string reference)
 //{
@@ -700,7 +711,6 @@ void ERModel::displayConnectionTable()
 }
 void ERModel::displayComponentTable()
 {
-	cout << "Components: " << endl;
 	cout << "---------------------------------" << endl;
 	cout << " Type |  ID  |  Name  " << endl;
 	cout << "------+------+-------------------" << endl;

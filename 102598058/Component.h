@@ -16,7 +16,7 @@ public:
 	int getID();
 	string getType();
 	string getText();
-	
+	vector<Component*> getConnections();
 	//vector<Component*> getConnections();
 	virtual void connectTo(Component *component)=0;
 	virtual bool canConnectTo(Component *component)=0;
@@ -24,7 +24,7 @@ private:
 	int _id;
 	string _type;
 	string _text;
-	
+	vector<Component*> connections;
 	//vector<Component*> _connectionsVector;
 };
 #endif

@@ -17,7 +17,6 @@ public:
 	void setPrimaryKey();
 	void checkFirstNodeId();
 	void checkSecondNodeId();
-	void checkEntity();
 	void showAttributeTable(string);
 	void checkPrimaryKey();
 	vector<string> splitString(string,string);
@@ -44,6 +43,9 @@ public:
 	void initialPresentID();
 	void displayComponentTable();
 	void displayConnectionTable();
+	void displayEntityTable();
+	void displayAttributeOfEntity();
+
 	void updateID();
 	Component* convertIdtoComponent(int);
 	void deleteComponent();
@@ -52,14 +54,18 @@ public:
 	void deleteComponentsVector();
 	void connectTwoNode();
 	void checkAddConnectionNodeOneLoop();
+	void checkEntityLoop();
 	bool checkAddConnectionNodeTwo();
 	void setConnectionNodes(int);
 	bool checkExistConnection(vector<int>);//連過的兩個相同node不可再連
 	void createConnector(vector<int>);
+	bool checkPrimaryKeyLoop();
+	void setPKEntity(int);
+	int getPKEntity();
 private:
 	vector<Component*> _components;
 	vector<Component*> _connections;//[0]connection [1]node1 [2]node2 [3]connection...
-	vector<Component*> _primaryKeys;//[0]entity [1]attribute1 [2]attribute2 [3]entity...
+	vector<Component*> _primaryKeys;//[0]entity [1]attribute1 [2]attribute2 [3]entity... ps.有PK的Entity
 
 	int _id;
 	
@@ -68,7 +74,7 @@ private:
 	int _nodeTwo;
 	ComponentFactory* componentFactory;
 	int _cardinality;
-	string _entityId;
+	
 	Component* _entityTemp;
 	Component* _entityAttribute;
 	string _primaryKey;
@@ -86,5 +92,6 @@ private:
 	string nodeIDOne;
 	string nodeIDTwo;
 	vector<int> _connectionNodesVector;//[0]node1 [1]node2
+	int entityID;
 };
 #endif

@@ -8,9 +8,10 @@ class Entity:public Node{
 public:
 	Entity();
 	virtual ~Entity();
-	void connectTo(Component* component);
-	bool canConnectTo(Component* component);
+	void connectTo(Component*);
+	bool canConnectTo(Component*);
+	void setConnections(Component*);
 private:
-	
+	vector<Component*> attributesVector;
 };
 #endif

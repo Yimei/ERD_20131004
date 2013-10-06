@@ -30,6 +30,7 @@ void TextUI::processCommand(){
 	case 1:
 		eRModel = new ERModel();
 		eRModel->loadFile();
+		cout << "Components: " << endl;
 		eRModel->displayComponentTable();
 		eRModel->displayConnectionTable();
 		displayMenu();
@@ -38,25 +39,22 @@ void TextUI::processCommand(){
 		displayMenu();
 	case 3: 
 		eRModel->addNode();
+		cout << "Components: " << endl;
 		eRModel->displayComponentTable();
 		displayMenu();
 	case 4:
 		eRModel->connectTwoNode();
-		//eRModel->displayConnectionTable();
-		//eRModel->checkFirstNodeId();
-		//cout << "Please enter the second node ID "<< endl << "> ";
-		//eRModel->checkSecondNodeId();
-		
-		//eRModel->addConnection(eRModel->getFirstNode(),eRModel->getSecondNode());
 		displayMenu();
 	case 5:
+		cout << "The ER diagram is displayed as follows:"<<endl<<"Nodes:"<<endl;
 		eRModel->displayComponentTable();
 		eRModel->displayConnectionTable();
 		displayMenu();
 	case 6:
+		eRModel->displayEntityTable();
 		eRModel->setPrimaryKey();
 		
-		eRModel->checkEntity();
+		
 		eRModel->checkPrimaryKey();
 		eRModel->showPrimary();
 		displayMenu();
