@@ -15,5 +15,6 @@ public:
 private:
 	ERModel* eRModel;
 	string componentType;
+	Component* componentCopy;
 };
 #endif

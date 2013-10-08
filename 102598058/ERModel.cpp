@@ -46,10 +46,12 @@ ERModel::~ERModel()
 void ERModel::undo()
 {
 	commandManager.undo();
+	cout << commandManager.getHint() <<endl;
 }
 void ERModel::redo()
 {
 	commandManager.redo();
+	cout << commandManager.getHint() <<endl;
 }
 void ERModel::addNodePresentation(string type)
 {
@@ -63,14 +65,24 @@ void ERModel::connectComponentPresentation()
 {
 	commandManager.execute(new ConnectComponentsCmd(this));
 }
+//void ERModel::setComponentsVector(Component* component)
+//{
+//	for (int i = 0; i < _components.size();i++)
+//	{
+//		_components[i]
+//	}
+//	
+//}
+
+vector<Component*> ERModel::getComponentsVector()
+{
+	return _components;
+}
 void ERModel::addNode(string type){
 	
 	string text;
 	cout<< "Enter the name of this node:" << endl<<"> ";
 	cin >> text;
-
-	
-
 	componentFactory = new ComponentFactory();
 	Component* component = componentFactory->createComponent(type);
 	component->setID(id);
@@ -80,63 +92,43 @@ void ERModel::addNode(string type){
 	_components.push_back(component);
 	cout << "A node [" << getWholeName(type) << "]" << " has been added. ID: " << id-1 << ", Name: " << text << endl;
 }
-void ERModel::deleteComponent(int id)
+void ERModel::setComponentsVector(Component* component)
 {
-	
-	if (_components[id]->getType() == "C")
-	{
-		for (int i = 0; i < _connections.size();i++)
-		{
-			if(_connections[i]->getID() == id)
-			{
-				delete _connections[i+1+1];
-				delete _connections[i+1];
-				delete _connections[i];
-			}
-		}
-		delete _components[id];
-	}
-	else
-	{
-		int updateConnectionsSize = _connections.size();
-		for(int i = 0; i < updateConnectionsSize;i++)
-		{
-			if(_connections[i]->getID() == id)
-			{
-				if(_connections[i-1]->getType() == "C")//表i為node1
-				{
-					delete _connections[i+1];
-					delete _connections[i];
-					delete _connections[i-1];
-				}
-				else 
-				{
-					delete _connections[i];
-					delete _connections[i-1];
-					delete _connections[i-2];
-				}
-				updateConnectionsSize = _connections.size();
-				i=0;
-			
-			}
-		}
-			delete _components[id];
-	}
-	/*while (_components.size() > 0)
-	{
-	Component* deleteData = _components.back();
-	_components.pop_back();
-	delete deleteData;
-	}*/
+	_components.push_back(component);
+}
+Component* ERModel::clone(string type)
+{
+	componentFactory = new ComponentFactory();
+	Component* component = componentFactory->createComponent(type);
+	component->setID(_components.back()->getID());
+	component->setText(_components.back()->getText());
+	component->setType(type);
+	return component;
+}
 
-	cout << "The component '" << atoi(deleteId.c_str()) <<"' has been deleted."<<endl;
+void ERModel::updateComponentSize()
+{
+	componentSize = _components.size();
+}
+int ERModel::getPresentComponentsSize()
+{
+	return componentSize;
+}
+void ERModel::setDeleteID(int deleteId)
+{
+
+	_deleteId = deleteId;
+}
+int ERModel::getDelelteID()
+{
+	return _deleteId;
 }
 int ERModel::checkDeleteComponentIDLoop()
 {
-	cin >> deleteId;
-	if (existId(atoi(deleteId.c_str())))
+	cin >> checkDeletIdTemp;
+	if (existId(atoi(checkDeletIdTemp.c_str())))
 	{
-		return atoi(deleteId.c_str());
+		return atoi(checkDeletIdTemp.c_str());
 	}
 	else
 	{
@@ -201,7 +193,6 @@ Component* ERModel::convertIdtoComponent(int id)
 }
 void ERModel::deleteComponentsVector()
 {
-	
 	for(int i = 0; i < _components.size();i++)
 	{
 		delete _components[i];
@@ -768,12 +759,91 @@ void ERModel::displayComponentTable()
 	cout << "---------------------------------" << endl;
 	cout << " Type |  ID  |  Name  " << endl;
 	cout << "------+------+-------------------" << endl;
-
+	updateComponentSize();
 	for (int i = 0; i < _components.size();i++)
 	{
 		cout << "   " << _components[i]->getType() << "  |  "<< setw(2) << _components[i]->getID()  << "  |  " << _components[i]->getText() << endl;
 	}
 	cout << "---------------------------------" << endl;
+}
+void ERModel::deleteComponent(int id)
+{
+	setDeleteID(id);
+	if (_components[id]->getType() == "C")
+	{
+		for (int i = 0; i < _connections.size();i++)
+		{
+			if(_connections[i]->getID() == id)
+			{
+				cout <<"......"<<endl;
+				_connections.erase(_connections.begin()+i+1+1);
+				_connections.erase(_connections.begin()+i+1);
+				_connections.erase(_connections.begin()+i);
+				/*delete _connections[i+1+1];
+				delete _connections[i+1];
+				delete _connections[i];*/
+			}
+		}
+		for (int i = 0; i < _components.size(); i++)
+		{
+			if (_components[i]->getID()==id)
+			{
+				//cout << _components[id]->getText()<<endl;
+				_components.erase(_components.begin()+i);
+				delete _components[i];
+				//cout << _components.size()<<endl;
+			}
+		}
+		updateComponentSize();
+	}
+	else
+	{
+		//cout <<"....."<<endl;
+		int updateConnectionsSize = _connections.size();
+		for(int i = 0; i < _connections.size();i++)
+		{
+			if(_connections[i]->getID() == id)
+			{
+				if(_connections[i-1]->getType() == "C")//表i為node1
+				{
+					_connections.erase(_connections.begin()+i+1);
+					_connections.erase(_connections.begin()+i);
+					_connections.erase(_connections.begin()+i-1);
+					/*delete _connections[i+1];
+					delete _connections[i];
+					delete _connections[i-1];*/
+				}
+				else 
+				{
+					_connections.erase(_connections.begin()+i);
+					_connections.erase(_connections.begin()+i-1);
+					_connections.erase(_connections.begin()+i-1-1);
+					/*delete _connections[i];
+					delete _connections[i-1];
+					delete _connections[i-1-1];*/
+				}
+				updateConnectionsSize = _connections.size();
+				i=0;
+			}
+		}
+		
+		for (int i = 0; i < _components.size(); i++)
+		{
+			if (_components[i]->getID()==id)
+			{
+				//cout << _components[id]->getText()<<endl;
+				_components.erase(_components.begin()+i);
+				//delete _components[i];
+				//cout << _components.size()<<endl;
+			}
+		}
+	}
+	/*while (_components.size() > 0)
+	{
+	Component* deleteData = _components.back();
+	_components.pop_back();
+	delete deleteData;
+	}*/
 }
 void ERModel::deleteLastComponent()
 {

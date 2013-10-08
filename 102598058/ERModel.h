@@ -73,6 +73,14 @@ public:
 	void deleteComponentPresentation(int);
 	void connectComponentPresentation();
 
+	vector<Component*> getComponentsVector();
+	void setComponentsVector(Component*);
+	Component* clone(string);
+
+	void setDeleteID(int);
+	int getDelelteID();
+	void updateComponentSize();
+	int getPresentComponentsSize();
 private:
 	CommandManager commandManager;
 	ERModel* eRModel;
@@ -102,10 +110,13 @@ private:
 	vector<string> splitStringItem;
 	int _presentID;
 	int id;
-	string deleteId;
+	int _deleteId;
 	string nodeIDOne;
 	string nodeIDTwo;
 	vector<int> _connectionNodesVector;//[0]node1 [1]node2
 	int entityID;
+	string checkDeletIdTemp;
+
+	int componentSize;
 };
 #endif

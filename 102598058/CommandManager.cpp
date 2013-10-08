@@ -2,7 +2,7 @@
 #include <stack>
 CommandManager::CommandManager()
 {
-
+	hint = " ";
 }
 CommandManager::~CommandManager()
 {
@@ -20,7 +20,12 @@ CommandManager::~CommandManager()
 void CommandManager::execute(Command* command)
 {
 	command->execute();
+
+
 	undoCommands.push(command);
+
+
+
 	while(!redoCommands.empty())
 	{
 		Command* c = redoCommands.top();
@@ -31,8 +36,13 @@ void CommandManager::execute(Command* command)
 }
 void CommandManager::redo()
 {
+	
 	if (redoCommands.size() == 0)
+	{
+		hint = "Cannot redo.";
 		return;
+	}
+	hint = "redo succeed!";	
 
 	Command* c = redoCommands.top();
 	redoCommands.pop();
@@ -42,11 +52,17 @@ void CommandManager::redo()
 void CommandManager::undo()
 {
 	if (undoCommands.size() == 0)
+	{
+		hint = "Cannot undo.";
 		return;
-
+	}
+	hint = "Undo succeed!";
 	Command*  c = undoCommands.top();
 	undoCommands.pop();
 	c->unexecute();//undo the command
 	redoCommands.push(c);
-
+}
+string CommandManager::getHint()
+{
+	return hint;
 }

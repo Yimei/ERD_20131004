@@ -82,13 +82,19 @@ void TextUI::processCommand(){
 	case 8:
 		cout << "Please enter the component ID" << endl <<"> ";
 		eRModel->deleteComponentPresentation(eRModel->checkDeleteComponentIDLoop());
+		cout << "The component '" << eRModel->getDelelteID() <<"' has been deleted."<<endl;
 		system("pause");
 	case 9:
 		eRModel->undo();
-		system("pause");
+		cout << "Components: " << endl;
+		eRModel->displayComponentTable();
+		eRModel->displayConnectionTable();
+		displayMenu();
 	case 10:
 		eRModel->redo();
-		system("pause");
+		eRModel->displayComponentTable();
+		eRModel->displayConnectionTable();
+		displayMenu();
 	case 11:
 		cout << "Goodbye!" <<endl;
 		return;
