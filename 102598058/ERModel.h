@@ -2,7 +2,7 @@
 #define _ERModel_H_
 #include "string"
 #include <vector>
-
+#include "CommandManager.h"
 #include "Component.h"
 #include "ComponentFactory.h"
 #include <iostream>
@@ -11,7 +11,7 @@ class ERModel{
 public:
 	ERModel();
 	virtual ~ERModel();
-	void addNode();
+	void addNode(string);
 	string getWholeName(string);
 	void showTable();
 	void setPrimaryKey();
@@ -48,21 +48,35 @@ public:
 
 	void updateID();
 	Component* convertIdtoComponent(int);
-	void deleteComponent();
+	
 	bool existId(int);
-	void checkDeleteComponentIDLoop();
+	int checkDeleteComponentIDLoop();
 	void deleteComponentsVector();
 	void connectTwoNode();
-	void checkAddConnectionNodeOneLoop();
+	int checkAddConnectionNodeOneLoop();
 	void checkEntityLoop();
 	bool checkAddConnectionNodeTwo();
 	void setConnectionNodes(int);
 	bool checkExistConnection(vector<int>);//連過的兩個相同node不可再連
 	void createConnector(vector<int>);
-	bool checkPrimaryKeyLoop();
+	void checkPrimaryKeyLoop();
 	void setPKEntity(int);
 	int getPKEntity();
+
+	void deleteComponent(int);
+	void undo();
+	void redo();
+
+	void deleteLastComponent();
+	
+	void addNodePresentation(string);
+	void deleteComponentPresentation(int);
+	void connectComponentPresentation();
+
 private:
+	CommandManager commandManager;
+	ERModel* eRModel;
+
 	vector<Component*> _components;
 	vector<Component*> _connections;//[0]connection [1]node1 [2]node2 [3]connection...
 	vector<Component*> _primaryKeys;//[0]entity [1]attribute1 [2]attribute2 [3]entity... ps.有PK的Entity
@@ -88,7 +102,7 @@ private:
 	vector<string> splitStringItem;
 	int _presentID;
 	int id;
-	string _deleteId;
+	string deleteId;
 	string nodeIDOne;
 	string nodeIDTwo;
 	vector<int> _connectionNodesVector;//[0]node1 [1]node2

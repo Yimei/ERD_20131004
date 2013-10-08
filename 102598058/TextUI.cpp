@@ -4,8 +4,12 @@
 #include "ERModel.h"
 using namespace std;
 //#define WKONDYWTA "What kind of node do you want to add?\n[A]Attribute [E]Entity [R]Relation\n> ";
-TextUI::TextUI(){
-	eRModel = new ERModel();
+TextUI::TextUI(ERModel* model){
+	//eRModel = new ERModel();
+	eRModel = model;
+}
+TextUI::~TextUI(){
+
 }
 void TextUI::displayMenu(){
 	cout << "1. Load ER diagram file" << endl;
@@ -23,8 +27,7 @@ void TextUI::displayMenu(){
 }
 void TextUI::processCommand(){
 	int _command;
-	string _typeName;
-	string _type;
+	string type;
 	cin >> _command;
 	switch (_command){
 	case 1:
@@ -38,42 +41,75 @@ void TextUI::processCommand(){
 		eRModel->saveFile();
 		displayMenu();
 	case 3: 
-		eRModel->addNode();
+		
+		cout << "What kind of node do you want to add?\n[A]Attribute [E]Entity [R]Relation" << endl<<"> ";
+		cin >> type;
+		while ((type != "A")&&(type != "E")&&(type != "R"))
+		{
+			cout << "You entered an invalid node. Please enter a valid one again.\n[A]Attribute [E]Entity [R]Relation" << endl<<"> ";
+			cin >> type;
+		}
+
+		eRModel->addNodePresentation(type);
 		cout << "Components: " << endl;
 		eRModel->displayComponentTable();
 		displayMenu();
+
 	case 4:
-		eRModel->connectTwoNode();
+		cout << "Please enter the first node ID "<< endl << "> ";
+		eRModel->setConnectionNodes(eRModel->checkAddConnectionNodeOneLoop());
+		
+		cout << "Please enter the second node ID "<< endl << "> ";
+		eRModel->connectComponentPresentation();
+		//eRModel->connectTwoNode();
 		displayMenu();
+
 	case 5:
 		cout << "The ER diagram is displayed as follows:"<<endl<<"Nodes:"<<endl;
 		eRModel->displayComponentTable();
 		eRModel->displayConnectionTable();
 		displayMenu();
+
 	case 6:
 		eRModel->displayEntityTable();
 		eRModel->setPrimaryKey();
-		
-		
-		eRModel->checkPrimaryKey();
-		eRModel->showPrimary();
 		displayMenu();
+		//eRModel->checkPrimaryKey();
+		//eRModel->showPrimary();
 	case 7:
 		eRModel->displayTable();
 		displayMenu();
 	case 8:
-		eRModel->deleteComponent();
-
+		cout << "Please enter the component ID" << endl <<"> ";
+		eRModel->deleteComponentPresentation(eRModel->checkDeleteComponentIDLoop());
+		system("pause");
+	case 9:
+		eRModel->undo();
+		system("pause");
+	case 10:
+		eRModel->redo();
+		system("pause");
 	case 11:
 		cout << "Goodbye!" <<endl;
-
+		return;
 		//eRModel->exit();
-		break;
+		
 	default:
 		system("pause");
 	}
 }
-TextUI::~TextUI(){
+void TextUI::action_addCommand()
+{
 
 }
+void TextUI::action_redo()
+{
+
+
+}
+void TextUI::action_undo()
+{
+
+}
+
 

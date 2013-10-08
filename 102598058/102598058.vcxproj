@@ -78,10 +78,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AddComponentCmd.cpp" />
     <ClCompile Include="Attribute.cpp" />
+    <ClCompile Include="Command.cpp" />
+    <ClCompile Include="CommandManager.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="ComponentFactory.cpp" />
+    <ClCompile Include="ConnectComponentsCmd.cpp" />
     <ClCompile Include="Connector.cpp" />
+    <ClCompile Include="DeleteComponentCmd.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="ERModel.cpp" />
     <ClCompile Include="main.cpp" />
@@ -91,10 +96,15 @@
     <ClCompile Include="TextUI.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AddComponentCmd.h" />
     <ClInclude Include="Attribute.h" />
+    <ClInclude Include="Command.h" />
+    <ClInclude Include="CommandManager.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="ComponentFactory.h" />
+    <ClInclude Include="ConnectComponentsCmd.h" />
     <ClInclude Include="Connector.h" />
+    <ClInclude Include="DeleteComponentCmd.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="ERModel.h" />
     <ClInclude Include="Node.h" />
