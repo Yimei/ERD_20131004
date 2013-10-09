@@ -12,5 +12,7 @@ public:
 private:
 	ERModel* eRModel;
 	int ID;
+	Component* componentCopy;
+	vector<Component*> connectionCopy;
 };
 #endif

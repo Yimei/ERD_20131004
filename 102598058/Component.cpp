@@ -29,10 +29,10 @@ string Component::getText(){
 string Component::getType(){
 	return _type;
 }
-vector<Component*> Component::getConnections()
-{
-	return connections;
-}
+//vector<Component*> Component::getConnections()
+//{
+//	return connections;
+//}
 //vector<Component*> Component::getConnections()
 //{
 //	return _connectionsVector;

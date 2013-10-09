@@ -16,7 +16,7 @@ public:
 	int getID();
 	string getType();
 	string getText();
-	vector<Component*> getConnections();
+	virtual vector<Component*> getConnections()=0;
 	//vector<Component*> getConnections();
 	virtual void connectTo(Component *component)=0;
 	virtual bool canConnectTo(Component *component)=0;

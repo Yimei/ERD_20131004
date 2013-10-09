@@ -75,12 +75,20 @@ public:
 
 	vector<Component*> getComponentsVector();
 	void setComponentsVector(Component*);
+	vector<Component*> getConnectionsVector();
+	void setConnectionsVector(Component*);
+
 	Component* clone(string);
+	Component* connectionsClone(string,int);
+	Component* componentsClone(string, int);
 
 	void setDeleteID(int);
 	int getDelelteID();
 	void updateComponentSize();
 	int getPresentComponentsSize();
+
+	int getIndexOfComponentID(int);
+	int getIndexOfConnectionsID(int);
 private:
 	CommandManager commandManager;
 	ERModel* eRModel;

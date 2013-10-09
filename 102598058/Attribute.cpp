@@ -2,8 +2,10 @@
 #include <iostream>
 #include "Attribute.h"
 using namespace std;
-Attribute::Attribute():Node(){	
-	connectedEntity = NULL;
+Attribute::Attribute():Node()
+{	
+	for (int i = 0; i < connectedEntity.size();i++)
+		connectedEntity.push_back(NULL);
 }
 void Attribute::connectTo(Component* component){
 	//this->setConnections(component);
@@ -13,15 +15,19 @@ bool Attribute::canConnectTo(Component* component){
 	{
 		return false;
 	}
-	else if(connectedEntity!=NULL)
+	else if(connectedEntity.size() >0)
 	{
 		return false;
 	}
 	else
 	{
-		connectedEntity = component;
+		connectedEntity.push_back(component);
 	}
 }
+vector<Component*> Attribute::getConnections()
+{
+	return connectedEntity;
+}
 Attribute::~Attribute(){
-	delete connectedEntity;
+	//delete connectedEntity;
 }

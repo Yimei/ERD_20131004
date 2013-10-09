@@ -6,11 +6,14 @@ using namespace std;
 class ConnectComponentsCmd:public Command
 {
 public:
-	ConnectComponentsCmd(ERModel*);
+	ConnectComponentsCmd(ERModel*,string);
 	virtual ~ConnectComponentsCmd();
 	void execute();
 	void unexecute();
 private:
 	ERModel* eRModel;
+	Component* componentCopy;
+	string componentType;
+	vector<Component*> connectionsCopy; 
 };
 #endif

@@ -14,16 +14,19 @@ bool Entity::canConnectTo(Component* component){
 	}
 	else 
 	{
-		if(component->getType() == "A")
-		{
+		
 			setConnections(component);
-		}
+		
 		return true;
 	}
 }
 void Entity::setConnections(Component* component)
 {
-	this->attributesVector.push_back(component);
+	this->connectedNodesVector.push_back(component);
+}
+vector<Component*> Entity::getConnections()
+{
+	return connectedNodesVector;
 }
 Entity::~Entity(){
 

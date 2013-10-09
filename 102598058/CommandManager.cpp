@@ -20,23 +20,16 @@ CommandManager::~CommandManager()
 void CommandManager::execute(Command* command)
 {
 	command->execute();
-
-
 	undoCommands.push(command);
-
-
-
 	while(!redoCommands.empty())
 	{
 		Command* c = redoCommands.top();
 		redoCommands.pop();
 		delete c;
 	}
-
 }
 void CommandManager::redo()
 {
-	
 	if (redoCommands.size() == 0)
 	{
 		hint = "Cannot redo.";

@@ -11,9 +11,11 @@ public:
 	int getNodeTwoConnectionId();
 	void connectTo(Component* component);
 	bool canConnectTo(Component* component);
+	vector<Component*> getConnections();
 	int _nodeOneConnectionId;
 	int _nodeTwoConnectionId;
 private:
 	string type;
+	vector<Component*> connectedComponent;
 };
 #endif

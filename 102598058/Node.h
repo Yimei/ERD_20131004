@@ -8,6 +8,7 @@ class Node:public Component
 public:
 	Node();
 	virtual ~Node();
+	virtual vector<Component*> getConnections()=0;
 	virtual void connectTo(Component* component)=0;
 	virtual bool canConnectTo(Component* component)=0; 
 private:

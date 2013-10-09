@@ -63,7 +63,7 @@ void ERModel::deleteComponentPresentation(int deleteComponent)
 }
 void ERModel::connectComponentPresentation()
 {
-	commandManager.execute(new ConnectComponentsCmd(this));
+	commandManager.execute(new ConnectComponentsCmd(this,"C"));
 }
 //void ERModel::setComponentsVector(Component* component)
 //{
@@ -96,12 +96,38 @@ void ERModel::setComponentsVector(Component* component)
 {
 	_components.push_back(component);
 }
+vector<Component*> ERModel::getConnectionsVector()
+{
+	return _connections;
+}
+void ERModel::setConnectionsVector(Component* component)
+{
+	_connections.push_back(component);
+}
 Component* ERModel::clone(string type)
 {
 	componentFactory = new ComponentFactory();
 	Component* component = componentFactory->createComponent(type);
 	component->setID(_components.back()->getID());
 	component->setText(_components.back()->getText());
+	component->setType(type);
+	return component;
+}
+Component* ERModel::connectionsClone(string type,int pos)
+{
+	componentFactory = new ComponentFactory();
+	Component* component = componentFactory->createComponent(type);
+	component->setID(_connections.at(pos)->getID());
+	component->setText(_connections.at(pos)->getText());
+	component->setType(type);
+	return component;
+}
+Component* ERModel::componentsClone(string type, int pos)
+{
+	componentFactory = new ComponentFactory();
+	Component* component = componentFactory->createComponent(type);
+	component->setID(_components.at(pos)->getID());
+	component->setText(_components.at(pos)->getText());
 	component->setType(type);
 	return component;
 }
@@ -201,7 +227,7 @@ void ERModel::deleteComponentsVector()
 void ERModel::loadFile(){
 	string _filePath;
 	string line;
-	cout << "Please input a file path: "<<endl;
+	cout << "Please input a file path: ";
 	cin >> _filePath;
 	ifstream myfile(_filePath);
 	if (myfile.is_open())
@@ -238,8 +264,11 @@ void ERModel::loadFile(){
 			addPrimaryKeyFromFile(splitString(line,","));
 		}	
 		myfile.close();
+		cout << "Components: " << endl;
+		displayComponentTable();
+		displayConnectionTable();
 	}
-	else cout << "Unable to open file";
+	else cout << "File not found!!"<<endl;
 }
 int ERModel::getPresentID()
 {
@@ -305,28 +334,34 @@ void ERModel::connectTwoNode()
 	if (checkAddConnectionNodeTwo()) 
 	{
 		setConnectionNodes(atoi(nodeIDTwo.c_str()));
+		cout << _connectionNodesVector.size() <<endl;
 		if (_connectionNodesVector[1] == _connectionNodesVector[0])//itself
 		{
+			cout << "&"<<endl;
 			cout << "The Node '" <<  _connectionNodesVector[1] <<"' cannot be connected to itself." << endl;
 			_connectionNodesVector.clear();
 		}//same type
 		else if (_components[_connectionNodesVector[1]]->getType() == _components[_connectionNodesVector[0]]->getType())
 		{
+			cout << "@~"<<endl;
 			cout << "The node '" <<  _connectionNodesVector[1] <<"' cannot be connected by the node '"<<  _connectionNodesVector[0] <<"'."<<endl; 
 		    _connectionNodesVector.clear();
 		}//已連過同一條connector
 		else if (checkExistConnection(_connectionNodesVector))//true: 已存在
 		{
+			cout << "***"<<endl;
 			cout << "The node '" << _connectionNodesVector[1]<<"' has already been connected to node '" << _connectionNodesVector[0] <<"'."<<endl;
 		    _connectionNodesVector.clear();
 		}
 		else if (!(_components[_connectionNodesVector[1]]->canConnectTo(_components[_connectionNodesVector[0]]))&&(_components[_connectionNodesVector[0]]->canConnectTo(   _components[_connectionNodesVector[1]])))
 		{
+			cout << "+++"<<endl;
 			cout << "The node '"<<_connectionNodesVector[1]<<"' cannot be connected by the node '"<< _connectionNodesVector[0]<<"'."<<endl;
 		    _connectionNodesVector.clear();
 		}
 		else
 		{
+			
 			cout << "The node '"<<_connectionNodesVector[1]<<"' has been connected to the node '"<<_connectionNodesVector[0]<<"'."<<endl;
 			createConnector(_connectionNodesVector);
 			_connections.push_back(_components[_connectionNodesVector[0]]);
@@ -558,14 +593,19 @@ void ERModel::checkPrimaryKeyLoop()
 	vector<string> pkTemp = splitString(PKString,",");//id is string
 	for (int i = 0; i < pkTemp.size(); i++)
 	{
+		//if (_components[getPKEntity()]->getConnections())
 		vector<Component*> entityAttributes =  _components[getPKEntity()]->getConnections();
 		 _primaryKeys.push_back(_components[getPKEntity()]);
 		for (int j = 0; j < entityAttributes.size();j++)
 		{
-			if (atoi(pkTemp[i].c_str()) == entityAttributes[j]->getID())
+			if(entityAttributes[j]->getType()=="A")
 			{
-				_primaryKeys.push_back(_components[atoi(pkTemp[i].c_str())]);
+				if (atoi(pkTemp[i].c_str()) == entityAttributes[j]->getID())
+				{
+					_primaryKeys.push_back(_components[atoi(pkTemp[i].c_str())]);
+				}
 			}
+			
 		}
 		if(_primaryKeys.size() != i+1)
 		{
@@ -610,7 +650,8 @@ void ERModel::displayAttributeOfEntity()
 	cout << "-----+----+----------------------" << endl;
 	for (int i = 0; i < entityTemp->getConnections().size();i++)
 	{
-		cout << "  " << entityTemp->getConnections()[i]->getType() << "  |  " << entityTemp->getConnections()[i]->getID() << "  |  " << entityTemp->getConnections()[i]->getText()<< endl;
+		if (entityTemp->getConnections()[i]->getType()=="A")
+			cout << "  " << entityTemp->getConnections()[i]->getType() << "  |  " << entityTemp->getConnections()[i]->getID() << "  |  " << entityTemp->getConnections()[i]->getText()<< endl;
 	}
 	cout << "------------------------------------" << endl;
 }
@@ -768,17 +809,25 @@ void ERModel::displayComponentTable()
 }
 void ERModel::deleteComponent(int id)
 {
+	
 	setDeleteID(id);
+	
 	if (_components[id]->getType() == "C")
 	{
+		cout << _connections.size()<<endl;
 		for (int i = 0; i < _connections.size();i++)
 		{
 			if(_connections[i]->getID() == id)
 			{
-				cout <<"......"<<endl;
+				//cout << i <<endl;
+				//cout <<"......"<<endl;
 				_connections.erase(_connections.begin()+i+1+1);
+				//cout <<"......"<<endl;
 				_connections.erase(_connections.begin()+i+1);
+				//cout <<"......"<<endl;
 				_connections.erase(_connections.begin()+i);
+				//cout <<"......"<<endl;
+				continue;
 				/*delete _connections[i+1+1];
 				delete _connections[i+1];
 				delete _connections[i];*/
@@ -786,11 +835,12 @@ void ERModel::deleteComponent(int id)
 		}
 		for (int i = 0; i < _components.size(); i++)
 		{
+			cout << "*&)(*"<<endl;
 			if (_components[i]->getID()==id)
 			{
 				//cout << _components[id]->getText()<<endl;
 				_components.erase(_components.begin()+i);
-				delete _components[i];
+				//delete _components[i];
 				//cout << _components.size()<<endl;
 			}
 		}
@@ -844,6 +894,22 @@ void ERModel::deleteComponent(int id)
 	_components.pop_back();
 	delete deleteData;
 	}*/
+}
+int ERModel::getIndexOfComponentID(int componentID)
+{
+	for (int i = 0; i < _components.size();i++)
+	{
+		if(_components[i]->getID() == componentID)
+			return i;
+	}
+}
+int ERModel::getIndexOfConnectionsID(int connectionsID)
+{
+	for (int i = 0; i < _connections.size();i++)
+	{
+		if (_connections[i]->getID() == connectionsID)
+			return i;
+	}
 }
 void ERModel::deleteLastComponent()
 {

@@ -33,9 +33,9 @@ void TextUI::processCommand(){
 	case 1:
 		eRModel = new ERModel();
 		eRModel->loadFile();
-		cout << "Components: " << endl;
-		eRModel->displayComponentTable();
-		eRModel->displayConnectionTable();
+		
+		/*eRModel->displayComponentTable();
+		eRModel->displayConnectionTable();*/
 		displayMenu();
 	case 2:
 		eRModel->saveFile();
@@ -83,7 +83,7 @@ void TextUI::processCommand(){
 		cout << "Please enter the component ID" << endl <<"> ";
 		eRModel->deleteComponentPresentation(eRModel->checkDeleteComponentIDLoop());
 		cout << "The component '" << eRModel->getDelelteID() <<"' has been deleted."<<endl;
-		system("pause");
+		displayMenu();
 	case 9:
 		eRModel->undo();
 		cout << "Components: " << endl;

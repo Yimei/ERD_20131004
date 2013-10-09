@@ -8,10 +8,11 @@ class Attribute:public Node{
 public:
 	Attribute();
 	virtual ~Attribute();
+	vector<Component*> getConnections();
 	void connectTo(Component* component);
 	bool canConnectTo(Component* component);
 private:
 	Connector* connector;
-	Component* connectedEntity;
+	vector<Component*> connectedEntity;
 };
 #endif

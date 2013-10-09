@@ -24,9 +24,18 @@ bool Relationship::canConnectTo(Component* component){
 	}
 	else  
 	{
-		connectedEntity.push_back(component);
+		//setConnections(component);
+		setConnections(component);
 		return true;
 	}
+}
+void Relationship::setConnections(Component* component)
+{
+	connectedEntity.push_back(component);
+}
+vector<Component*> Relationship::getConnections()
+{
+	return connectedEntity;
 }
 Relationship::~Relationship(){
 
