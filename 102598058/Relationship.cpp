@@ -1,6 +1,8 @@
 #include <string>
 #include <iostream>
 #include "Relationship.h"
+#define E "E"
+#define TWO 2
 using namespace std;
 
 Relationship::Relationship():Node(){
@@ -10,21 +12,19 @@ Relationship::Relationship():Node(){
 	}
 }
 void Relationship::connectTo(Component* component){
-	//this->setConnections(component);
 }
 bool Relationship::canConnectTo(Component* component){
 	
-	if (component->getType()!="E")
+	if (component->getType()!= E)
 	{
 		return false;
 	}
-	else if(connectedEntity.size() == 2)
+	else if(connectedEntity.size() == TWO)
 	{
 		return false;
 	}
 	else  
 	{
-		//setConnections(component);
 		setConnections(component);
 		return true;
 	}

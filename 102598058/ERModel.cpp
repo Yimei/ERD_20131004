@@ -7,11 +7,25 @@
 #include "AddComponentCmd.h"
 #include "DeleteComponentCmd.h"
 #include "ConnectComponentsCmd.h"
-#define TWO 2;
+#define A "A"
+#define E "E"
+#define R "R"
+#define C "C"
+#define COMMA ","
+#define EMPTY_STRING ""
+#define BLANK " "
+#define DOUBLE_BLANK "  "
+#define TWO 2
+#define COMMABLANK ", "
+#define ZERO_STRING "0"
+#define NONAME "No name"
+#define ATTRIBUTE "Attribute"
+#define ENTITY "Entity"
+#define RELATIONSHIP "Relationship"
 using namespace std;
 ERModel::ERModel(){
 	_entityTemp=NULL;
-	_primaryKey = "";
+	_primaryKey = EMPTY_STRING;
 	thisKey=0;
 	id=0;
 }
@@ -35,36 +49,35 @@ ERModel::~ERModel()
 	delete _attributeWithOutPK[i];
 	}*/
 }
-void ERModel::undo()
+void ERModel::undo()//復原
 {
 	commandManager.undo();
 	cout << commandManager.getHint() <<endl;
 }
-void ERModel::redo()
+void ERModel::redo()//重作
 {
 	commandManager.redo();
 	cout << commandManager.getHint() <<endl;
 }
-void ERModel::addNodePresentation(string type)
+void ERModel::addNodePresentation(string type)//addNode command
 {
 	commandManager.execute(new AddComponentCmd(this, type));
 }
-void ERModel::deleteComponentPresentation(int deleteComponent)
+void ERModel::deleteComponentPresentation(int deleteComponent)//delete Component command
 {
 	commandManager.execute(new DeleteComponentCmd(this,deleteComponent));
 }
-void ERModel::connectComponentPresentation()
+void ERModel::connectComponentPresentation()//connect component command
 {
-	commandManager.execute(new ConnectComponentsCmd(this,"C"));
+	commandManager.execute(new ConnectComponentsCmd(this,C));
 }
-vector<Component*> ERModel::getComponentsVector()
+vector<Component*> ERModel::getComponentsVector()//取全部的component vector
 {
 	return _components;
 }
-void ERModel::addNode(string type)
+void ERModel::addNode(string type)//新增
 {
 	string text;
-	cout<< "Enter the name of this node:" << endl<<"> ";
 	cin >> text;
 	componentFactory = new ComponentFactory();
 	Component* component = componentFactory->createComponent(type);
@@ -73,21 +86,20 @@ void ERModel::addNode(string type)
 	component->setText(text);
 	component->setType(type);
 	_components.push_back(component);
-	cout << "A node [" << getWholeName(type) << "]" << " has been added. ID: " << id-1 << ", Name: " << text << endl;
 }
-void ERModel::setComponentsVector(Component* component)
+void ERModel::setComponentsVector(Component* component)//設定 component vector
 {
 	_components.push_back(component);
 }
-vector<Component*> ERModel::getConnectionsVector()
+vector<Component*> ERModel::getConnectionsVector()//取得全部connection vector
 {
 	return _connections;
 }
-void ERModel::setConnectionsVector(Component* component)
+void ERModel::setConnectionsVector(Component* component)//設定connection vector
 {
 	_connections.push_back(component);
 }
-Component* ERModel::clone(string type)
+Component* ERModel::clone(string type)//複製components vector最後一個值
 {
 	componentFactory = new ComponentFactory();
 	Component* component = componentFactory->createComponent(type);
@@ -96,7 +108,7 @@ Component* ERModel::clone(string type)
 	component->setType(type);
 	return component;
 }
-Component* ERModel::connectionsClone(string type,int pos)
+Component* ERModel::connectionsClone(string type,int pos)//複製connections component
 {
 	componentFactory = new ComponentFactory();
 	Component* component = componentFactory->createComponent(type);
@@ -105,7 +117,7 @@ Component* ERModel::connectionsClone(string type,int pos)
 	component->setType(type);
 	return component;
 }
-Component* ERModel::componentsClone(string type, int pos)
+Component* ERModel::componentsClone(string type, int pos)//複製components component
 {
 	componentFactory = new ComponentFactory();
 	Component* component = componentFactory->createComponent(type);
@@ -114,24 +126,58 @@ Component* ERModel::componentsClone(string type, int pos)
 	component->setType(type);
 	return component;
 }
-void ERModel::setDeleteID(int deleteId)
+void ERModel::setDeleteID(int deleteId)//設定deleted component id
 {
 	_deleteId = deleteId;
 }
-int ERModel::getDelelteID()
+int ERModel::getDelelteID()//取得deleted component id
 {
 	return _deleteId;
 }
+//string ERModel::getCheckDeleteComponentHint(int returnValue)//取得提示
+//{
+//	if (returnValue == -1)
+//		return checkDeleteComponentHint;
+//	else
+//		return;
+//}
+//int ERModel::checkDeleteComponentIDLoop()//check 要delete的 id是否正確
+//{
+//	checkDeleteComponentHint = BLANK;
+//	cin >> checkDeletIdTemp;
+//	if (checkDeletIdTemp == ZERO_STRING)
+//	{
+//		return 0;
+//	}
+//	else if (atoi(checkDeletIdTemp.c_str()) == 0)
+//	{
+//		checkDeleteComponentHint = "The component ID You entered does not exist. Please enter a valid one again." ;
+//		return -1;
+//		//checkDeleteComponentIDLoop();
+//	}
+//	else if (existId(atoi(checkDeletIdTemp.c_str())))
+//	{
+//		return atoi(checkDeletIdTemp.c_str());
+//	}
+//	else
+//	{
+//		checkDeleteComponentHint =  "The component ID You entered does not exist. Please enter a valid one again.";
+//		return -1;
+//		//checkDeleteComponentIDLoop();
+//	}
+//}
 int ERModel::checkDeleteComponentIDLoop()
 {
+	//checkDeleteComponentHint = BLANK;
 	cin >> checkDeletIdTemp;
-	if (checkDeletIdTemp == "0")
+	if (checkDeletIdTemp == ZERO_STRING)
 	{
 		return 0;
 	}
 	else if (atoi(checkDeletIdTemp.c_str()) == 0)
 	{
-		cout << "The component ID You entered does not exist. Please enter a valid one again." <<endl<<"> ";
+		cout <<"The component ID You entered does not exist. Please enter a valid one again."<<endl;
+
 		checkDeleteComponentIDLoop();
 	}
 	else if (existId(atoi(checkDeletIdTemp.c_str())))
@@ -140,11 +186,11 @@ int ERModel::checkDeleteComponentIDLoop()
 	}
 	else
 	{
-		cout << "The component ID You entered does not exist. Please enter a valid one again." <<endl<<"> ";
+		cout <<  "The component ID You entered does not exist. Please enter a valid one again."<<endl;
 		checkDeleteComponentIDLoop();
 	}
 }
-bool ERModel::existId(int id)
+bool ERModel::existId(int id)//是否存在此id
 {
 	for(int i = 0; i < _components.size();i++)
 	{
@@ -155,28 +201,28 @@ bool ERModel::existId(int id)
 	}
 	return false;	
 }
-void ERModel::addComponentsFromFile(vector<string> nodeVectorFromFile)
+void ERModel::addComponentsFromFile(vector<string> nodeVectorFromFile)//從file增加components
 {
 		componentFactory = new ComponentFactory();
 		Component* component = componentFactory->createComponent(nodeVectorFromFile[0].substr(0,1));
 		component->setID(id);
 		updateID();
 		component->setType(nodeVectorFromFile[0].substr(0,1));
-		if (nodeVectorFromFile.size() == 2 )
+		if (nodeVectorFromFile.size() == TWO)
 		{
 			component->setText(nodeVectorFromFile[1]);
 		}
 		else
 		{
-			component->setText(" ");
+			component->setText(BLANK);
 		}
 		_components.push_back(component);
 }
-void ERModel::updateID()
+void ERModel::updateID()//更新id
 {
 	id = id + 1;
 }
-void ERModel::addConnectionFromFile(vector<string> connectionVectorFromFile)
+void ERModel::addConnectionFromFile(vector<string> connectionVectorFromFile)//增加connections 從file
 {
 	componentFactory = new ComponentFactory();
 	for (int i = 0; i < connectionVectorFromFile.size();i++)
@@ -188,7 +234,7 @@ void ERModel::addConnectionFromFile(vector<string> connectionVectorFromFile)
 		_connections.push_back(component);
 	}
 }
-Component* ERModel::convertIdtoComponent(int id)
+Component* ERModel::convertIdtoComponent(int id)//輸入id 傳出components裡的index
 {
 	for (int i = 0; i < _components.size();i++)
 	{
@@ -197,44 +243,45 @@ Component* ERModel::convertIdtoComponent(int id)
 	}
 	return NULL;
 }
-void ERModel::loadFile(){
+void ERModel::loadFile()//載入檔案
+{
 	string _filePath;
 	string line;
-	cout << "Please input a file path: ";
+	
 	cin >> _filePath;
 	ifstream myfile(_filePath);
 	if (myfile.is_open())
 	{
 		while (getline(myfile,line))
 		{	
-			if (line == "")
+			if (line == EMPTY_STRING)
 			{
 				break;
 			}
-			addComponentsFromFile(splitString(line," "));
+			addComponentsFromFile(splitString(line,BLANK));
 		}	
 		while (getline(myfile,line))
 		{	
-			if (line == "")
+			if (line == EMPTY_STRING)
 			{
 				break;
 			}
-			int pos = line.find(" ");
+			int pos = line.find(BLANK);
 			if (pos == 1)
 			{
-				line.replace(line.find("  "), 2," ");
+				line.replace(line.find(DOUBLE_BLANK), TWO,BLANK);
 			}
-			line.replace(line.find(","),1," ");
-			addConnectionFromFile(splitString(line," "));
+			line.replace(line.find(COMMA),1,BLANK);
+			addConnectionFromFile(splitString(line,BLANK));
 		}	
 		while (getline(myfile,line))
 		{	
-			if (line == "")
+			if (line == EMPTY_STRING)
 			{
 				break;
 			}
-			line.replace(line.find(" "),1,",");
-			addPrimaryKeyFromFile(splitString(line,","));
+			line.replace(line.find(BLANK),1,COMMA);
+			addPrimaryKeyFromFile(splitString(line,COMMA));
 		}	
 		myfile.close();
 		cout << "The ER diagram is displayed as follows:" << endl<<"Components: " << endl;
@@ -243,7 +290,8 @@ void ERModel::loadFile(){
 	}
 	else cout << "File not found!!"<<endl;
 }
-void ERModel::saveFile(){
+void ERModel::saveFile()//存檔
+{
 	string _fileName;
 	cout << "Please input the file name: ";
 	cin >> _fileName;//輸出的檔名路徑
@@ -252,20 +300,20 @@ void ERModel::saveFile(){
 	{
 		for (int i = 0; i < _components.size();i++)
 		{
-			myfile << _components[i]->getType() << ", " << _components[i]->getText() << endl;
+			myfile << _components[i]->getType() << COMMABLANK << _components[i]->getText() << endl;
 		}
 		myfile << endl;
 		
 		for (int i = 0; i < _connections.size();i = i+3)
 		{
-			myfile <<setiosflags(ios::left) <<setw(3)<< _connections[i]->getID() << _connections[i+1]->getID()<< "," << _connections[i+2]->getID()<<endl;
+			myfile <<setiosflags(ios::left) <<setw(1+1+1)<< _connections[i]->getID() << _connections[i+1]->getID()<< COMMA << _connections[i+1+1]->getID()<<endl;
 		}
 		int entityPresentIndex = 0;//Entity count
 		for (int i = 0; i < _primaryKeys.size();i++)
 		{
 			if(_primaryKeys[i]->getType() == "E")
 			{
-				myfile << endl<<_primaryKeys[i]->getID()<<" ";
+				myfile << endl<<_primaryKeys[i]->getID()<<BLANK;
 				entityPresentIndex = i;
 			}
 			else 
@@ -274,14 +322,14 @@ void ERModel::saveFile(){
 				if (i == entityPresentIndex+1)
 					myfile << _primaryKeys[i]->getID();
 				else
-					myfile <<"," << _primaryKeys[i]->getID();
+					myfile <<COMMA << _primaryKeys[i]->getID();
 			}
 		}
 		myfile.close();
 	}
 	else cout << "Unable to open file";
 }
-void ERModel::addPrimaryKeyFromFile(vector<string> primaryKeyVectorFromFile)
+void ERModel::addPrimaryKeyFromFile(vector<string> primaryKeyVectorFromFile)//從file增加primary key
 {
 	componentFactory = new ComponentFactory();
 	for (int i = 0; i< primaryKeyVectorFromFile.size();i++)
@@ -293,10 +341,10 @@ void ERModel::addPrimaryKeyFromFile(vector<string> primaryKeyVectorFromFile)
 		_primaryKeys.push_back(component);
 	}
 }
-bool ERModel::checkAddConnectionNodeTwo()
+bool ERModel::checkAddConnectionNodeTwo()//檢查第二個connected node
 {
 	cin >> nodeIDTwo;
-	if (nodeIDTwo == "0")//string 不用轉換前就是0
+	if (nodeIDTwo == ZERO_STRING)//string 不用轉換前就是0
 	{
 		return true;
 	}
@@ -313,7 +361,7 @@ bool ERModel::checkAddConnectionNodeTwo()
 		return false;
 	}
 }
-void ERModel::connectTwoNode()
+void ERModel::connectTwoNode()//connect nodes
 {
 	if (checkAddConnectionNodeTwo()) 
 	{
@@ -360,13 +408,13 @@ void ERModel::connectTwoNode()
 		_connectionNodesVector.clear();
 	}
 }
-void ERModel::createConnector(vector<int> connectionNodes)
+void ERModel::createConnector(vector<int> connectionNodes)//生出connector
 {
 	componentFactory = new ComponentFactory();
-	Component* component = componentFactory->createComponent("C");
+	Component* component = componentFactory->createComponent(C);
 	component->setID(id);
 	updateID();
-	component->setType("C");
+	component->setType(C);
 	if ((_components[connectionNodes[0]]->getType() == "R") || (_components[connectionNodes[1]]->getType() == "R"))
 	{
 		string cardinality;
@@ -391,12 +439,12 @@ void ERModel::createConnector(vector<int> connectionNodes)
 	}
 	else
 	{
-		component->setText(" ");
+		component->setText(BLANK);
 	}
 	_components.push_back(component);
 	_connections.push_back(component);
 }
-bool ERModel::checkExistConnection(vector<int> connectionNodes)
+bool ERModel::checkExistConnection(vector<int> connectionNodes)//檢查是否存在此connection
 {
 	for (int i = 0; i < _connections.size(); i++)
 	{
@@ -420,24 +468,25 @@ bool ERModel::checkExistConnection(vector<int> connectionNodes)
 	}
 	return false;
 }
-void ERModel::setConnectionNodes(int nodeOne)
+void ERModel::setConnectionNodes(int nodeOne)//設定要connect 點的vector
 {
 	_connectionNodesVector.push_back(nodeOne);
 }
-string ERModel::getWholeName(string type){ 
-	if (type == "A")
-		return "Attribute";
-	else if (type == "E")
-		return "Entity";
-	else if (type == "R")
-		return "Relationship";
+string ERModel::getWholeName(string type)//取得全名
+{ 
+	if (type == A)
+		return ATTRIBUTE;
+	else if (type == E)
+		return ENTITY;
+	else if (type == R)
+		return RELATIONSHIP;
 	else
-		return "No name";
+		return NONAME;
 }
-int ERModel::checkAddConnectionNodeOneLoop()
+int ERModel::checkAddConnectionNodeOneLoop()//檢查第一個要connect的點
 {
 	cin >> nodeIDOne;
-	if (nodeIDOne == "0")//string 不用轉換前就是0
+	if (nodeIDOne == ZERO_STRING)//string 不用轉換前就是0
 	{
 		return atoi(nodeIDOne.c_str());
 	}
@@ -454,7 +503,8 @@ int ERModel::checkAddConnectionNodeOneLoop()
 		checkAddConnectionNodeOneLoop();
 	}
 }
-void ERModel::setPrimaryKey(){
+void ERModel::setPrimaryKey()//設定primary key
+{
 	cout << "Enter the ID of the entity:" << endl << "> ";
 	checkEntityLoop();
 	displayAttributeOfEntity();//ok
@@ -463,11 +513,11 @@ void ERModel::setPrimaryKey(){
 	cout << "The entity '"<< getPKEntity() <<"' has the primary key ("<<endl;
 	for (int i = 0; i < _primaryKeys.size()-1;i++)
 	{
-		cout << _primaryKeys[i]  <<",";
+		cout << _primaryKeys[i]  <<COMMA;
 	}
 	cout << _primaryKeys[_primaryKeys.size()-1] <<")."<<endl;
 }
-vector<string> ERModel::splitString(string line, string reference)
+vector<string> ERModel::splitString(string line, string reference)//分析string
 {
 	int pos=1;
 	splitStringItem.clear();
@@ -480,12 +530,12 @@ vector<string> ERModel::splitString(string line, string reference)
 	}
 	return splitStringItem;
 }
-void ERModel::checkPrimaryKeyLoop()
+void ERModel::checkPrimaryKeyLoop()//檢查 primary key 直到正確
 {
 	_primaryKeys.clear();
 	string PKString;
 	cin >> PKString;
-	vector<string> pkTemp = splitString(PKString,",");//id is string
+	vector<string> pkTemp = splitString(PKString,COMMA);//id is string
 	for (int i = 0; i < pkTemp.size(); i++)
 	{
 		vector<Component*> entityAttributes =  _components[getPKEntity()]->getConnections();
@@ -508,10 +558,10 @@ void ERModel::checkPrimaryKeyLoop()
 	}
 	return ;
 }
-void ERModel::checkPrimaryKey()
+void ERModel::checkPrimaryKey()//檢查 primary key
 {
 	cin >> _primaryKey;
-	splitString(_primaryKey, ",");
+	splitString(_primaryKey, COMMA);
 	for (int i = 0; i < _primaryKeyVector.size();i++)
 	{
 		thisKey = 0;
@@ -529,7 +579,7 @@ void ERModel::checkPrimaryKey()
 		}
 	}
 }
-void ERModel::displayAttributeOfEntity()
+void ERModel::displayAttributeOfEntity()//顯示Entity所有的attributes
 {
 	Component* entityTemp;
 	entityTemp = _components[getPKEntity()];
@@ -540,15 +590,15 @@ void ERModel::displayAttributeOfEntity()
 	for (int i = 0; i < entityTemp->getConnections().size();i++)
 	{
 		if (entityTemp->getConnections()[i]->getType()=="A")
-			cout << "  " << entityTemp->getConnections()[i]->getType() << "  |  " << entityTemp->getConnections()[i]->getID() << "  |  " << entityTemp->getConnections()[i]->getText()<< endl;
+			cout << DOUBLE_BLANK << entityTemp->getConnections()[i]->getType() << "  |  " << entityTemp->getConnections()[i]->getID() << "  |  " << entityTemp->getConnections()[i]->getText()<< endl;
 	}
 	cout << "------------------------------------" << endl;
 }
-void ERModel::checkEntityLoop()
+void ERModel::checkEntityLoop()//檢查Entity
 {
 	string entityId;
 	cin >> entityId;
-	if ((entityId == "0") && (_components[0]->getType()=="E"))
+	if ((entityId == ZERO_STRING) && (_components[0]->getType() == E))
 	{
 		setPKEntity(atoi(entityId.c_str()));
 		return;
@@ -569,15 +619,15 @@ void ERModel::checkEntityLoop()
 		return;
 	}
 }
-void ERModel::setPKEntity(int entityid)
+void ERModel::setPKEntity(int entityid)//設定Entity 的 Primary key
 {
 	entityID = entityid;
 }
-int ERModel::getPKEntity()
+int ERModel::getPKEntity()//取得Entity 的 Primary key
 {
 	return entityID;
 }
-void ERModel::displayEntityTable()
+void ERModel::displayEntityTable()//show Entities table
 {
 	cout << "Entities:" << endl;
 	cout << "---------------------------------" << endl;
@@ -587,17 +637,17 @@ void ERModel::displayEntityTable()
 	{
 		if (_components[i]->getType() == "E")
 		{
-			cout <<"  "<<_components[i]->getType()<< "  |  "<<_components[i]->getID()<<"  |  "<< _components[i]->getText()<<endl;
+			cout <<DOUBLE_BLANK<<_components[i]->getType()<< "  |  "<<_components[i]->getID()<<"  |  "<< _components[i]->getText()<<endl;
 		}
 	}
 	cout << "---------------------------------" << endl;
 }
-void ERModel::showPrimary()
+void ERModel::showPrimary()//show primary key
 {
 	cout << "The entity '"<< _entityTemp->getID() <<"' has the primary key (";
 	for (int s = 0; s < _primaryKeyVector.size();s++)
 	{
-		cout << _primaryKeyVector[s] <<",";
+		cout << _primaryKeyVector[s] <<COMMA;
 	}
 	cout <<"). "<< endl;
 	for (int i = 0; i <_attributeWithOutPK.size();i++)
@@ -607,7 +657,7 @@ void ERModel::showPrimary()
 	_entityHasPrimaryKey.push_back(_entityTemp);
 	_pkOfEntities.push_back(_primaryKeyVector);
 }
-void ERModel::displayTable()
+void ERModel::displayTable()//show entity and it attributies table
 {
 	cout << "Tables:" << endl;
 	cout << "-----------------------------------" << endl;
@@ -615,15 +665,15 @@ void ERModel::displayTable()
 	cout << "-------+----------------------" << endl;
 	for (int i = 0; i < _entityHasPrimaryKey.size();i++)
 	{
-			cout << "  " << _entityHasPrimaryKey[i]->getText() << "  |  " << "PK(";
+			cout << DOUBLE_BLANK << _entityHasPrimaryKey[i]->getText() << "  |  " << "PK(";
 			for (int j = 0; j < _pkOfEntities[i].size();j++)
-				cout <<_pkOfEntities[i][j] << ",";
+				cout <<_pkOfEntities[i][j] << COMMA;
 			cout << "), " ;
 			cout << endl; 
 	}
 	cout << endl<<"------------------------------------" << endl;
 }
-void ERModel::displayConnectionTable()
+void ERModel::displayConnectionTable()//show connection table
 {
 	cout << "Connections:" <<endl;
 	cout << "------------------------------------" << endl;
@@ -633,7 +683,7 @@ void ERModel::displayConnectionTable()
 		cout << setw(6) << _connections[i]->getID() << "     |  "<<setw(2) << _connections[i+1]->getID() << "  |  "<<setw(2) << _connections[i+2]->getID() << endl;
 	cout << "------------------------------------" << endl;
 }
-void ERModel::displayComponentTable()
+void ERModel::displayComponentTable()//show component table
 {
 	cout << "---------------------------------" << endl;
 	cout << " Type |  ID  |  Name  " << endl;
@@ -642,17 +692,17 @@ void ERModel::displayComponentTable()
 		cout << "   " << _components[i]->getType() << "  |  "<< setw(2) << _components[i]->getID()  << "  |  " << _components[i]->getText() << endl;
 	cout << "---------------------------------" << endl;
 }
-void ERModel::deleteComponent(int id)
+void ERModel::deleteComponent(int id)//delete component
 {
 	setDeleteID(id);
-	if (_components[id]->getType() == "C")
+	if (_components[id]->getType() == C)
 	{
 		cout << _connections.size()<<endl;
 		for (int i = 0; i < _connections.size();i++)
 		{
 			if(_connections[i]->getID() == id)
 			{
-				_connections.erase(_connections.begin()+i+1+1);
+				_connections.erase(_connections.begin()+i+TWO);
 				_connections.erase(_connections.begin()+i+1);
 				_connections.erase(_connections.begin()+i);
 				continue;
@@ -673,7 +723,7 @@ void ERModel::deleteComponent(int id)
 		{
 			if(_connections[i]->getID() == id)
 			{
-				if(_connections[i-1]->getType() == "C")//表i為node1
+				if(_connections[i-1]->getType() == C)//表i為node1
 				{
 					_connections.erase(_connections.begin()+i+1);
 					_connections.erase(_connections.begin()+i);
@@ -682,8 +732,8 @@ void ERModel::deleteComponent(int id)
 				}
 				else 
 				{
-					int temp = i-2;
-					_connections.erase(_connections.begin()+temp+1+1);
+					int temp = i-TWO;
+					_connections.erase(_connections.begin()+temp+TWO);
 					_connections.erase(_connections.begin()+temp+1);
 					_components.erase(_components.begin()+getIndexOfComponentID(_connections[temp]->getID()));
 					_connections.erase(_connections.begin()+temp);
@@ -701,7 +751,7 @@ void ERModel::deleteComponent(int id)
 		}
 	}
 }
-int ERModel::getIndexOfComponentID(int componentID)
+int ERModel::getIndexOfComponentID(int componentID)//用 id 轉換成 components vector 的 index
 {
 	for (int i = 0; i < _components.size();i++)
 	{
@@ -709,7 +759,7 @@ int ERModel::getIndexOfComponentID(int componentID)
 			return i;
 	}
 }
-int ERModel::getIndexOfConnectionsID(int connectionsID)
+int ERModel::getIndexOfConnectionsID(int connectionsID)//用 id 轉換成connections vector 的 index
 {
 	for (int i = 0; i < _connections.size();i++)
 	{
@@ -717,3 +767,4 @@ int ERModel::getIndexOfConnectionsID(int connectionsID)
 			return i;
 	}
 }
+

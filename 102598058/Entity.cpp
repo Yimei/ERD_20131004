@@ -1,14 +1,14 @@
 #include <string>
 #include <iostream>
 #include "Entity.h"
+#define E "E"
 using namespace std;
 Entity::Entity():Node(){
 }
 void Entity::connectTo(Component* component){
-	//this->setConnections(component);
 }
 bool Entity::canConnectTo(Component* component){
-	if (component->getType() == "E")//是relationship 或 attribute
+	if (component->getType() == E)//是relationship 或 attribute
 	{
 		return false;
 	}

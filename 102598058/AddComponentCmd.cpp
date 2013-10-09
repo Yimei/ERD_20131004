@@ -24,5 +24,4 @@ void AddComponentCmd::execute()
 void AddComponentCmd::unexecute()
 {
 	eRModel->deleteComponent(componentCopy->getID());
-	//eRModel->deleteLastComponent();
 }

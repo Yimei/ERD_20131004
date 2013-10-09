@@ -58,6 +58,7 @@ public:
 	int getDelelteID();
 	int getIndexOfComponentID(int);
 	int getIndexOfConnectionsID(int);
+	string getCheckDeleteComponentHint(int);
 private:
 	CommandManager commandManager;
 	ERModel* eRModel;
@@ -81,5 +82,6 @@ private:
 	vector<int> _connectionNodesVector;//[0]node1 [1]node2
 	int entityID;
 	string checkDeletIdTemp;
+	string checkDeleteComponentHint;
 };
 #endif

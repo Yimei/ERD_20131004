@@ -2,6 +2,7 @@
 #include <iostream>
 #include "TextUI.h"
 #include "ERModel.h"
+
 using namespace std;
 //#define WKONDYWTA "What kind of node do you want to add?\n[A]Attribute [E]Entity [R]Relation\n> ";
 TextUI::TextUI(ERModel* model){
@@ -30,6 +31,7 @@ void TextUI::processCommand(){
 	if (command == "1")
 	{
 		eRModel = new ERModel();
+		cout << "Please input a file path: ";
 		eRModel->loadFile();
 		displayMenu();
 	}
@@ -47,7 +49,9 @@ void TextUI::processCommand(){
 			cout << "You entered an invalid node. Please enter a valid one again.\n[A]Attribute [E]Entity [R]Relation" << endl<<"> ";
 			cin >> type;
 		}
+		cout<< "Enter the name of this node:" << endl<<"> ";
 		eRModel->addNodePresentation(type);
+		cout << "A node [" << eRModel->getWholeName(type) << "]" << " has been added. ID: " << eRModel->getComponentsVector().back()->getID() << ", Name: " << eRModel->getComponentsVector().back()->getText() << endl;
 		cout << "Components: " << endl;
 		eRModel->displayComponentTable();
 		displayMenu();
@@ -80,8 +84,11 @@ void TextUI::processCommand(){
 	}
 	else if (command == "8")
 	{
+		int deleteComponentID;
 		cout << "Please enter the component ID" << endl <<"> ";
-		eRModel->deleteComponentPresentation(eRModel->checkDeleteComponentIDLoop());
+		deleteComponentID = eRModel->checkDeleteComponentIDLoop();
+		
+		eRModel->deleteComponentPresentation(deleteComponentID);
 		cout << "The component '" << eRModel->getDelelteID() <<"' has been deleted."<<endl;
 		cout << "Component:"<<endl;
 		eRModel->displayComponentTable();
