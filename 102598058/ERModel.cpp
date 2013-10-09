@@ -338,10 +338,33 @@ void ERModel::addPrimaryKeyFromFile(vector<string> primaryKeyVectorFromFile)
 		_primaryKeys.push_back(component);
 	}
 }
+bool ERModel::checkAddConnectionNodeTwo()
+{
+	cout << nodeIDTwo<<"~~"<<endl;
+	cin >> nodeIDTwo;
+	cout << nodeIDTwo<<endl;
+	if (nodeIDTwo == "0")//string 不用轉換前就是0
+	{
+		return true;
+	}
+	else 
+	{
+		for (int i = 0; i < _components.size(); i++)
+		{
+			if ((atoi(nodeIDTwo.c_str()) == _components[i]->getID()) && (atoi(nodeIDTwo.c_str())!=0))
+			{
+				return true;
+			}
+		}
+		cout << "The node ID you entered does not exist."<< endl;
+		return false;
+	}
+}
 void ERModel::connectTwoNode()
 {
 	if (checkAddConnectionNodeTwo()) 
 	{
+		cout << nodeIDTwo<<endl;
 		setConnectionNodes(atoi(nodeIDTwo.c_str()));
 		cout << _connectionNodesVector.size() <<endl;
 		if (_connectionNodesVector[1] == _connectionNodesVector[0])//itself
@@ -373,8 +396,8 @@ void ERModel::connectTwoNode()
 			
 			cout << "The node '"<<_connectionNodesVector[1]<<"' has been connected to the node '"<<_connectionNodesVector[0]<<"'."<<endl;
 			createConnector(_connectionNodesVector);
-			_connections.push_back(_components[_connectionNodesVector[0]]);
-			_connections.push_back(_components[_connectionNodesVector[1]]);
+			_connections.push_back(_components[getIndexOfComponentID(_connectionNodesVector[0])]);
+			_connections.push_back(_components[getIndexOfComponentID(_connectionNodesVector[1])]);
 			displayConnectionTable();
 			_connectionNodesVector.clear();
 		}
@@ -471,26 +494,7 @@ void ERModel::showTable()
 	}
 	cout << "----------------------------------" << endl;
 }
-bool ERModel::checkAddConnectionNodeTwo()
-{
-	cin >> nodeIDTwo;
-	if (nodeIDTwo == "0")//string 不用轉換前就是0
-	{
-		return true;
-	}
-	else 
-	{
-		for (int i = 0; i < _components.size(); i++)
-		{
-			if ((atoi(nodeIDTwo.c_str()) == _components[i]->getID()) && (atoi(nodeIDTwo.c_str())!=0))
-			{
-				return true;
-			}
-		}
-		cout << "The node ID you entered does not exist."<< endl;
-		return false;
-	}
-}
+
 int ERModel::checkAddConnectionNodeOneLoop()
 {
 	cin >> nodeIDOne;

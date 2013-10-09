@@ -14,5 +14,6 @@ private:
 	int ID;
 	Component* componentCopy;
 	vector<Component*> connectionCopy;
+	bool connectorBeDelete;
 };
 #endif
