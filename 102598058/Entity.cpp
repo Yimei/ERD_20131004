@@ -14,9 +14,7 @@ bool Entity::canConnectTo(Component* component){
 	}
 	else 
 	{
-		
-			setConnections(component);
-		
+		setConnections(component);
 		return true;
 	}
 }

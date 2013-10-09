@@ -83,6 +83,9 @@ void TextUI::processCommand(){
 		cout << "Please enter the component ID" << endl <<"> ";
 		eRModel->deleteComponentPresentation(eRModel->checkDeleteComponentIDLoop());
 		cout << "The component '" << eRModel->getDelelteID() <<"' has been deleted."<<endl;
+		cout << "Component:"<<endl;
+		eRModel->displayComponentTable();
+		eRModel->displayConnectionTable();
 		displayMenu();
 	case 9:
 		eRModel->undo();

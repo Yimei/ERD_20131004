@@ -152,13 +152,22 @@ int ERModel::getDelelteID()
 int ERModel::checkDeleteComponentIDLoop()
 {
 	cin >> checkDeletIdTemp;
-	if (existId(atoi(checkDeletIdTemp.c_str())))
+	if (checkDeletIdTemp == "0")
+	{
+		return 0;
+	}
+	else if (atoi(checkDeletIdTemp.c_str()) == 0)
+	{
+		cout << "The component ID You entered does not exist. Please enter a valid one again." <<endl<<"> ";
+		checkDeleteComponentIDLoop();
+	}
+	else if (existId(atoi(checkDeletIdTemp.c_str())))
 	{
 		return atoi(checkDeletIdTemp.c_str());
 	}
 	else
 	{
-		cout << "The component ID You entered does not exist. Please enter a valid one again." <<endl;
+		cout << "The component ID You entered does not exist. Please enter a valid one again." <<endl<<"> ";
 		checkDeleteComponentIDLoop();
 	}
 }
@@ -850,12 +859,14 @@ void ERModel::deleteComponent(int id)
 	{
 		//cout <<"....."<<endl;
 		int updateConnectionsSize = _connections.size();
+		//int k  = 0;
 		for(int i = 0; i < _connections.size();i++)
 		{
 			if(_connections[i]->getID() == id)
 			{
 				if(_connections[i-1]->getType() == "C")//ªíi¬°node1
 				{
+					
 					_connections.erase(_connections.begin()+i+1);
 					_connections.erase(_connections.begin()+i);
 					_connections.erase(_connections.begin()+i-1);
@@ -865,9 +876,21 @@ void ERModel::deleteComponent(int id)
 				}
 				else 
 				{
-					_connections.erase(_connections.begin()+i);
-					_connections.erase(_connections.begin()+i-1);
-					_connections.erase(_connections.begin()+i-1-1);
+					int temp = i-2;
+					cout <<"......"<<*_connections.begin()<<endl;
+					_connections.erase(_connections.begin()+temp+2);
+					cout <<"......"<<*_connections.begin()+temp+2<<endl;
+
+
+					_connections.erase(_connections.begin()+temp+1);
+					cout <<"......"<<*_connections.begin()+temp+1<<endl;
+
+
+					_connections.erase(_connections.begin()+temp);
+					cout <<"......"<<*_connections.begin()+temp<<endl;
+
+					//deleteComponent(_connections[i-1-1]->getID());
+					cout <<"......"<<*_connections.begin()<<endl;
 					/*delete _connections[i];
 					delete _connections[i-1];
 					delete _connections[i-1-1];*/
