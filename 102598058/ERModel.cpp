@@ -878,17 +878,18 @@ void ERModel::deleteComponent(int id)
 				{
 					int temp = i-2;
 					cout <<"......"<<*_connections.begin()<<endl;
-					_connections.erase(_connections.begin()+temp+2);
+					_connections.erase(_connections.begin()+temp+1+1);
 					cout <<"......"<<*_connections.begin()+temp+2<<endl;
 
 
 					_connections.erase(_connections.begin()+temp+1);
 					cout <<"......"<<*_connections.begin()+temp+1<<endl;
 
-
+					_components.erase(_components.begin()+getIndexOfComponentID(_connections[temp]->getID()));
+					cout <<"......"<<*_connections.begin()+temp<<endl;
 					_connections.erase(_connections.begin()+temp);
 					cout <<"......"<<*_connections.begin()+temp<<endl;
-
+					
 					//deleteComponent(_connections[i-1-1]->getID());
 					cout <<"......"<<*_connections.begin()<<endl;
 					/*delete _connections[i];
