@@ -65,15 +65,6 @@ void ERModel::connectComponentPresentation()
 {
 	commandManager.execute(new ConnectComponentsCmd(this,"C"));
 }
-//void ERModel::setComponentsVector(Component* component)
-//{
-//	for (int i = 0; i < _components.size();i++)
-//	{
-//		_components[i]
-//	}
-//	
-//}
-
 vector<Component*> ERModel::getComponentsVector()
 {
 	return _components;
@@ -132,17 +123,16 @@ Component* ERModel::componentsClone(string type, int pos)
 	return component;
 }
 
-void ERModel::updateComponentSize()
-{
-	componentSize = _components.size();
-}
-int ERModel::getPresentComponentsSize()
-{
-	return componentSize;
-}
+//void ERModel::updateComponentSize()
+//{
+//	componentSize = _components.size();
+//}
+//int ERModel::getPresentComponentsSize()
+//{
+//	return componentSize;
+//}
 void ERModel::setDeleteID(int deleteId)
 {
-
 	_deleteId = deleteId;
 }
 int ERModel::getDelelteID()
@@ -226,13 +216,13 @@ Component* ERModel::convertIdtoComponent(int id)
 	}
 	return NULL;
 }
-void ERModel::deleteComponentsVector()
-{
-	for(int i = 0; i < _components.size();i++)
-	{
-		delete _components[i];
-	}
-}
+//void ERModel::deleteComponentsVector()
+//{
+//	for(int i = 0; i < _components.size();i++)
+//	{
+//		delete _components[i];
+//	}
+//}
 void ERModel::loadFile(){
 	string _filePath;
 	string line;
@@ -273,21 +263,21 @@ void ERModel::loadFile(){
 			addPrimaryKeyFromFile(splitString(line,","));
 		}	
 		myfile.close();
-		cout << "Components: " << endl;
+		cout << "The ER diagram is displayed as follows:" << endl<<"Components: " << endl;
 		displayComponentTable();
 		displayConnectionTable();
 	}
 	else cout << "File not found!!"<<endl;
 }
-int ERModel::getPresentID()
-{
-	_presentID++;
-	return _presentID;
-}
-void ERModel::initialPresentID()
-{
-	_presentID = 0;
-}
+//int ERModel::getPresentID()
+//{
+//	_presentID++;
+//	return _presentID;
+//}
+//void ERModel::initialPresentID()
+//{
+//	_presentID = 0;
+//}
 void ERModel::saveFile(){
 	string _fileName;
 	cout << "Please input the file name: ";
@@ -482,18 +472,18 @@ string ERModel::getWholeName(string type){
 	else
 		return "No name";
 }
-void ERModel::showTable()
-{
-	cout << "Components:" << endl;
-	cout << "---------------------------------" << endl;
-	cout << "Type | ID | Name  " << endl;
-	cout << "-----+----+----------------------" << endl;
-	for (int i = 0; i < _components.size();i++)
-	{
-		cout << "  " << _components[i]->getType() << "  |  " << _components[i]->getID() << " |  " << _components[i]->getText()	<< endl;
-	}
-	cout << "----------------------------------" << endl;
-}
+//void ERModel::showTable()
+//{
+//	cout << "Components:" << endl;
+//	cout << "---------------------------------" << endl;
+//	cout << "Type | ID | Name  " << endl;
+//	cout << "-----+----+----------------------" << endl;
+//	for (int i = 0; i < _components.size();i++)
+//	{
+//		cout << "  " << _components[i]->getType() << "  |  " << _components[i]->getID() << " |  " << _components[i]->getText()	<< endl;
+//	}
+//	cout << "----------------------------------" << endl;
+//}
 
 int ERModel::checkAddConnectionNodeOneLoop()
 {
@@ -515,59 +505,59 @@ int ERModel::checkAddConnectionNodeOneLoop()
 		checkAddConnectionNodeOneLoop();
 	}
 }
-void ERModel::addConnection(Component* nodeOne, Component* nodeTwo)
-{
-	if (nodeOne->getID() == nodeTwo->getID()) //自己不能連 含Connector連Connector
-	{
-		cout << "The node '" << nodeTwo->getID() <<"' cannot be connected to itself."<<endl;
-	}	
-	else if (nodeOne->getType() == "C" || nodeTwo-> getType()=="C")
-	{
-		cout << "Connector could not be connected. " << endl;
-	}
-	else if (nodeOne->canConnectTo(nodeTwo))//R E A only
-	{
-		nodeOne->connectTo(nodeTwo);//setConnectionsNum() both
-		nodeTwo->connectTo(nodeOne);
-		Component* component = componentFactory->createComponent("C");
-		component->setID(id);
-		updateID();
-		component->setText("connector");
-		component->setType("C");
-		_components.push_back(component);
-		//_id++;
-		component->connectTo(nodeOne);
-		component->connectTo(nodeTwo);
-		if((nodeOne->getType()=="R") || (nodeTwo->getType()=="R"))
-		{
-			cout << "Enter the type of the cardinality:\n[0]1 [1]N" << endl << "> " << endl;
-			cin >> _cardinality;
-			if (_cardinality == 0)
-			{
-				component->setText("connector: cardinality= 1");
-			}
-			else if (_cardinality == 1)
-			{
-				component->setText("connector: cardinality= N");
-			}
-			else
-			{
-				cout << "Please enter '0' or '1'."<< endl;
-			}
-			cout << "The node '" << nodeOne->getID() << "' had been connected to the node '" << nodeTwo->getID() << "'." << endl;
-			cout << "Its cardinality of the relationship is '" << _cardinality << "'." << endl;
-		}
-		else
-		{
-			cout << "The node '" << nodeOne->getID() << "' has been connected to the node '" << nodeTwo->getID() << "'." << endl;
-			displayConnectionTable();
-		}
-	}
-	else
-	{
-		cout << "The node '"<< nodeOne->getID() << "' cannot be connected by the node '" << nodeTwo->getID() << "'." << endl;
-	}
-}
+//void ERModel::addConnection(Component* nodeOne, Component* nodeTwo)
+//{
+//	if (nodeOne->getID() == nodeTwo->getID()) //自己不能連 含Connector連Connector
+//	{
+//		cout << "The node '" << nodeTwo->getID() <<"' cannot be connected to itself."<<endl;
+//	}	
+//	else if (nodeOne->getType() == "C" || nodeTwo-> getType()=="C")
+//	{
+//		cout << "Connector could not be connected. " << endl;
+//	}
+//	else if (nodeOne->canConnectTo(nodeTwo))//R E A only
+//	{
+//		nodeOne->connectTo(nodeTwo);//setConnectionsNum() both
+//		nodeTwo->connectTo(nodeOne);
+//		Component* component = componentFactory->createComponent("C");
+//		component->setID(id);
+//		updateID();
+//		component->setText("connector");
+//		component->setType("C");
+//		_components.push_back(component);
+//		//_id++;
+//		component->connectTo(nodeOne);
+//		component->connectTo(nodeTwo);
+//		if((nodeOne->getType()=="R") || (nodeTwo->getType()=="R"))
+//		{
+//			cout << "Enter the type of the cardinality:\n[0]1 [1]N" << endl << "> " << endl;
+//			cin >> _cardinality;
+//			if (_cardinality == 0)
+//			{
+//				component->setText("connector: cardinality= 1");
+//			}
+//			else if (_cardinality == 1)
+//			{
+//				component->setText("connector: cardinality= N");
+//			}
+//			else
+//			{
+//				cout << "Please enter '0' or '1'."<< endl;
+//			}
+//			cout << "The node '" << nodeOne->getID() << "' had been connected to the node '" << nodeTwo->getID() << "'." << endl;
+//			cout << "Its cardinality of the relationship is '" << _cardinality << "'." << endl;
+//		}
+//		else
+//		{
+//			cout << "The node '" << nodeOne->getID() << "' has been connected to the node '" << nodeTwo->getID() << "'." << endl;
+//			displayConnectionTable();
+//		}
+//	}
+//	else
+//	{
+//		cout << "The node '"<< nodeOne->getID() << "' cannot be connected by the node '" << nodeTwo->getID() << "'." << endl;
+//	}
+//}
 void ERModel::setPrimaryKey(){
 	cout << "Enter the ID of the entity:" << endl << "> ";
 	checkEntityLoop();
@@ -716,26 +706,6 @@ void ERModel::displayEntityTable()
 	}
 	cout << "---------------------------------" << endl;
 }
-//void ERModel::splitString(string string, string reference)
-//{
-//
-//	//_primaryKeyVector.clear();
-//
-//	for (int i = 0; i < string.size(); i++)
-//	{
-//		if (string.size()==1)
-//		{
-//		}
-//		else
-//		{
-//			int pos = string.find(reference);
-//			string keyString = string.substr(0, pos);
-//			string = string.substr(pos+1);
-//			_primaryKeyVector.push_back(keyString);
-//		}
-//	}
-//	_primaryKeyVector.push_back(string.substr((string.size()-1),primaryKeyString.size()));
-//}
 void ERModel::showPrimary()
 {
 	cout << "The entity '"<< _entityTemp->getID() <<"' has the primary key (";
@@ -770,31 +740,31 @@ void ERModel::displayTable()
 	}
 	cout << endl<<"------------------------------------" << endl;
 }
-Component* ERModel::getFirstNode()
-{
-	return _components[_nodeOne];
-}
-Component* ERModel::getSecondNode()
-{
-	return _components[_nodeTwo];
-}
-vector<Component*> ERModel::getVector()
-{
-	return _components;
-}
-void ERModel::getTable()
-{
-	cout << "The ER diagram is display as follows:" << endl << "Nodes: " << endl;
-	cout << "------------------------------------" << endl;
-	cout << "Type | ID | Name  " << endl;
-	cout << "-----+----+----------------------" << endl;
-	for (int i = 0; i < _components.size();i++)
-	{
-		//cout << i;
-		cout << " " << _components[i]->getType() << "  |  " << _components[i]->getID() << "  |  " << _components[i]->getText()	<< endl;
-	}
-	displayConnectionTable();
-}
+//Component* ERModel::getFirstNode()
+//{
+//	return _components[_nodeOne];
+//}
+//Component* ERModel::getSecondNode()
+//{
+//	return _components[_nodeTwo];
+//}
+//vector<Component*> ERModel::getVector()
+//{
+//	return _components;
+//}
+//void ERModel::getTable()
+//{
+//	cout << "The ER diagram is display as follows:" << endl << "Nodes: " << endl;
+//	cout << "------------------------------------" << endl;
+//	cout << "Type | ID | Name  " << endl;
+//	cout << "-----+----+----------------------" << endl;
+//	for (int i = 0; i < _components.size();i++)
+//	{
+//		//cout << i;
+//		cout << " " << _components[i]->getType() << "  |  " << _components[i]->getID() << "  |  " << _components[i]->getText()	<< endl;
+//	}
+//	displayConnectionTable();
+//}
 void ERModel::displayConnectionTable()
 {
 	cout << "Connections:" <<endl;
@@ -813,7 +783,7 @@ void ERModel::displayComponentTable()
 	cout << "---------------------------------" << endl;
 	cout << " Type |  ID  |  Name  " << endl;
 	cout << "------+------+-------------------" << endl;
-	updateComponentSize();
+	//updateComponentSize();
 	for (int i = 0; i < _components.size();i++)
 	{
 		cout << "   " << _components[i]->getType() << "  |  "<< setw(2) << _components[i]->getID()  << "  |  " << _components[i]->getText() << endl;
@@ -857,14 +827,14 @@ void ERModel::deleteComponent(int id)
 				//cout << _components.size()<<endl;
 			}
 		}
-		updateComponentSize();
+		//updateComponentSize();
 	}
 	else
 	{
 		//cout <<"....."<<endl;
 		int updateConnectionsSize = _connections.size();
 		//int k  = 0;
-		for(int i = 0; i < _connections.size();i++)
+		for(int i = 0; i < updateConnectionsSize;i++)
 		{
 			if(_connections[i]->getID() == id)
 			{
@@ -873,6 +843,7 @@ void ERModel::deleteComponent(int id)
 					
 					_connections.erase(_connections.begin()+i+1);
 					_connections.erase(_connections.begin()+i);
+					_components.erase(_components.begin()+getIndexOfComponentID(_connections[i-1]->getID()));
 					_connections.erase(_connections.begin()+i-1);
 					/*delete _connections[i+1];
 					delete _connections[i];
@@ -939,7 +910,7 @@ int ERModel::getIndexOfConnectionsID(int connectionsID)
 			return i;
 	}
 }
-void ERModel::deleteLastComponent()
-{
-
-}
+//void ERModel::deleteLastComponent()
+//{
+//
+//}
