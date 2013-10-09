@@ -16,5 +16,7 @@ public:
 private:
 	ERModel* eRModel;
 	int _firstId;
+	string command;
+	string type;
 };
 #endif

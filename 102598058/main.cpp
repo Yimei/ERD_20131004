@@ -10,8 +10,8 @@ int main()
 
 	textUI->displayMenu();
 	
-	delete textUI;
-	delete model;
+	/*delete textUI;
+	delete model;*/
 	system("pause");
 	return 0;
 }

@@ -26,22 +26,20 @@ void TextUI::displayMenu(){
 	processCommand();
 }
 void TextUI::processCommand(){
-	int _command;
-	string type;
-	cin >> _command;
-	switch (_command){
-	case 1:
+	cin >> command;
+	if (command == "1")
+	{
 		eRModel = new ERModel();
 		eRModel->loadFile();
-		
-		/*eRModel->displayComponentTable();
-		eRModel->displayConnectionTable();*/
 		displayMenu();
-	case 2:
+	}
+	else if (command == "2")
+	{
 		eRModel->saveFile();
 		displayMenu();
-	case 3: 
-		
+	}
+	else if (command == "3")
+	{
 		cout << "What kind of node do you want to add?\n[A]Attribute [E]Entity [R]Relation" << endl<<"> ";
 		cin >> type;
 		while ((type != "A")&&(type != "E")&&(type != "R"))
@@ -49,37 +47,39 @@ void TextUI::processCommand(){
 			cout << "You entered an invalid node. Please enter a valid one again.\n[A]Attribute [E]Entity [R]Relation" << endl<<"> ";
 			cin >> type;
 		}
-
 		eRModel->addNodePresentation(type);
 		cout << "Components: " << endl;
 		eRModel->displayComponentTable();
 		displayMenu();
-
-	case 4:
+	}
+	else if (command == "4")
+	{
 		cout << "Please enter the first node ID "<< endl << "> ";
 		eRModel->setConnectionNodes(eRModel->checkAddConnectionNodeOneLoop());
-		
 		cout << "Please enter the second node ID "<< endl << "> ";
 		eRModel->connectComponentPresentation();
-		//eRModel->connectTwoNode();
 		displayMenu();
-
-	case 5:
+	}
+	else if (command == "5")
+	{
 		cout << "The ER diagram is displayed as follows:"<<endl<<"Nodes:"<<endl;
 		eRModel->displayComponentTable();
 		eRModel->displayConnectionTable();
 		displayMenu();
-
-	case 6:
+	}
+	else if (command == "6")
+	{
 		eRModel->displayEntityTable();
 		eRModel->setPrimaryKey();
 		displayMenu();
-		//eRModel->checkPrimaryKey();
-		//eRModel->showPrimary();
-	case 7:
+	}
+	else if (command == "7")
+	{
 		eRModel->displayTable();
 		displayMenu();
-	case 8:
+	}
+	else if (command == "8")
+	{
 		cout << "Please enter the component ID" << endl <<"> ";
 		eRModel->deleteComponentPresentation(eRModel->checkDeleteComponentIDLoop());
 		cout << "The component '" << eRModel->getDelelteID() <<"' has been deleted."<<endl;
@@ -87,38 +87,32 @@ void TextUI::processCommand(){
 		eRModel->displayComponentTable();
 		eRModel->displayConnectionTable();
 		displayMenu();
-	case 9:
+	}
+	else if (command == "9")
+	{
 		eRModel->undo();
 		cout << "Components: " << endl;
 		eRModel->displayComponentTable();
 		eRModel->displayConnectionTable();
 		displayMenu();
-	case 10:
+	}
+	else if (command == "10")
+	{
 		eRModel->redo();
 		eRModel->displayComponentTable();
 		eRModel->displayConnectionTable();
 		displayMenu();
-	case 11:
+	}
+	else if (command == "11")
+	{
 		cout << "Goodbye!" <<endl;
 		return;
-		//eRModel->exit();
-		
-	default:
-		system("pause");
 	}
-}
-void TextUI::action_addCommand()
-{
-
-}
-void TextUI::action_redo()
-{
-
-
-}
-void TextUI::action_undo()
-{
-
+	else
+	{
+		cout << "No this option. Please enter the number again."<<endl;
+		displayMenu();
+	}
 }
 
 
