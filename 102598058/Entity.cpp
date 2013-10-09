@@ -27,5 +27,4 @@ vector<Component*> Entity::getConnections()
 	return connectedNodesVector;
 }
 Entity::~Entity(){
-
 }

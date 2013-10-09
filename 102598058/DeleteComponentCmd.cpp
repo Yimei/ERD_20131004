@@ -1,5 +1,4 @@
 #include "DeleteComponentCmd.h"
-
 DeleteComponentCmd::DeleteComponentCmd(ERModel* model,int id):Command()
 {
 	ID = id;
@@ -12,7 +11,6 @@ DeleteComponentCmd::DeleteComponentCmd(ERModel* model,int id):Command()
 	}
 }
 DeleteComponentCmd::~DeleteComponentCmd(){
-
 }
 void DeleteComponentCmd::execute()
 {
@@ -27,21 +25,18 @@ void DeleteComponentCmd::execute()
 		{
 			cout << connectionCopy[i]->getID() <<"  "; 
 		}
-		 
 	}
 	else
 	{
 		componentCopy = eRModel->componentsClone(eRModel->getComponentsVector()[eRModel->getIndexOfComponentID(ID)]->getType(),eRModel->getIndexOfComponentID(ID));
 		for (int i = 0; i < eRModel->getConnectionsVector().size();i++)
 		{
-			
 			if ((eRModel->getConnectionsVector()[i]->getID() == ID) && (eRModel->getConnectionsVector()[i-1]->getType() == "C"))
 			{//node1
 				connectorBeDelete = true;
 				connectionCopy.push_back(eRModel->componentsClone(eRModel->getConnectionsVector()[i-1]->getType(), eRModel->getIndexOfComponentID(eRModel->getConnectionsVector()[i-1]->getID())));
 				connectionCopy.push_back(eRModel->componentsClone(eRModel->getConnectionsVector()[i]->getType(), eRModel->getIndexOfComponentID(eRModel->getConnectionsVector()[i]->getID())));
 				connectionCopy.push_back(eRModel->componentsClone(eRModel->getConnectionsVector()[i+1]->getType(), eRModel->getIndexOfComponentID(eRModel->getConnectionsVector()[i+1]->getID())));
-			
 			}
 			else if ((eRModel->getConnectionsVector()[i]->getID() == ID) && (eRModel->getConnectionsVector()[i-1-1]->getType() == "C"))
 			{//node2
@@ -57,9 +52,7 @@ void DeleteComponentCmd::execute()
 			cout << connectionCopy[i]->getID() <<"  "; 
 		}
 	}
-
 	eRModel->deleteComponent(ID);
-	
 }
 void DeleteComponentCmd::unexecute()
 {
@@ -72,7 +65,5 @@ void DeleteComponentCmd::unexecute()
 	{
 		eRModel->setConnectionsVector(connectionCopy[i]);
 	}
-
-	
 	cout <<"= =!!"<<endl;
 }

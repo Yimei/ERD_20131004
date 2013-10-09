@@ -1,13 +1,12 @@
 #include "AddComponentCmd.h"
-
 AddComponentCmd::AddComponentCmd(ERModel* model, string type):Command()
 {
 	eRModel = model;
 	componentType = type;
 	componentCopy =NULL;
 }
-AddComponentCmd::~AddComponentCmd(){
-
+AddComponentCmd::~AddComponentCmd()
+{
 }
 void AddComponentCmd::execute()
 {

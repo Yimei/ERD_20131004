@@ -8,8 +8,8 @@ Attribute::Attribute():Node()
 	for (int i = 0; i < connectedEntity.size();i++)
 		connectedEntity.push_back(NULL);
 }
-void Attribute::connectTo(Component* component){
-	//this->setConnections(component);
+void Attribute::connectTo(Component* component)
+{
 }
 bool Attribute::canConnectTo(Component* component){
 	if ((component->getType() != E) )//不會有重複connector問題
@@ -29,6 +29,6 @@ vector<Component*> Attribute::getConnections()
 {
 	return connectedEntity;
 }
-Attribute::~Attribute(){
-	//delete connectedEntity;
+Attribute::~Attribute()
+{
 }

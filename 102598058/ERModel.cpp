@@ -31,23 +31,6 @@ ERModel::ERModel(){
 }
 ERModel::~ERModel()
 {
-	/*
-	delete componentFactory;
-	delete _entityTemp;
-
-
-	for (int i = 0; i < _components.size();i++)
-	{
-	delete _components[i];
-	}
-	for (int i = 0; i < _entityHasPrimaryKey.size();i++)
-	{
-	delete _entityHasPrimaryKey[i];
-	}
-	for (int i = 0; i < _attributeWithOutPK.size();i++)
-	{
-	delete _attributeWithOutPK[i];
-	}*/
 }
 void ERModel::undo()//復原
 {
@@ -134,38 +117,6 @@ int ERModel::getDelelteID()//取得deleted component id
 {
 	return _deleteId;
 }
-//string ERModel::getCheckDeleteComponentHint(int returnValue)//取得提示
-//{
-//	if (returnValue == -1)
-//		return checkDeleteComponentHint;
-//	else
-//		return;
-//}
-//int ERModel::checkDeleteComponentIDLoop()//check 要delete的 id是否正確
-//{
-//	checkDeleteComponentHint = BLANK;
-//	cin >> checkDeletIdTemp;
-//	if (checkDeletIdTemp == ZERO_STRING)
-//	{
-//		return 0;
-//	}
-//	else if (atoi(checkDeletIdTemp.c_str()) == 0)
-//	{
-//		checkDeleteComponentHint = "The component ID You entered does not exist. Please enter a valid one again." ;
-//		return -1;
-//		//checkDeleteComponentIDLoop();
-//	}
-//	else if (existId(atoi(checkDeletIdTemp.c_str())))
-//	{
-//		return atoi(checkDeletIdTemp.c_str());
-//	}
-//	else
-//	{
-//		checkDeleteComponentHint =  "The component ID You entered does not exist. Please enter a valid one again.";
-//		return -1;
-//		//checkDeleteComponentIDLoop();
-//	}
-//}
 int ERModel::checkDeleteComponentIDLoop()
 {
 	//checkDeleteComponentHint = BLANK;

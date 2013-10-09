@@ -1,5 +1,4 @@
 #include "ConnectComponentsCmd.h"
-
 ConnectComponentsCmd::ConnectComponentsCmd(ERModel* model,string type):Command()
 {
 	componentCopy = NULL;

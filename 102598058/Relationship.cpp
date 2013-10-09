@@ -4,7 +4,6 @@
 #define E "E"
 #define TWO 2
 using namespace std;
-
 Relationship::Relationship():Node(){
 	for (int i = 0; i < connectedEntity.size();i++)
 	{

@@ -9,7 +9,6 @@ public:
 	virtual ~TextUI();
 	void displayMenu();
 	void processCommand();
-
 	void action_addCommand();
 	void action_redo();
 	void action_undo();

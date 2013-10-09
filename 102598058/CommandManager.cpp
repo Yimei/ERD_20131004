@@ -36,7 +36,6 @@ void CommandManager::redo()
 		return;
 	}
 	hint = "redo succeed!";	
-
 	Command* c = redoCommands.top();
 	redoCommands.pop();
 	c->execute(); //redo the command

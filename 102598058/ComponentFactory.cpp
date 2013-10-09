@@ -9,7 +9,8 @@
 #define R "R"
 #define C "C"
 using namespace std;
-ComponentFactory::ComponentFactory(){
+ComponentFactory::ComponentFactory()
+{
 }
 Component* ComponentFactory::createComponent(string type){
 	if(type  == A)
@@ -34,5 +35,4 @@ Component* ComponentFactory::createComponent(string type){
 	}
 }
 ComponentFactory::~ComponentFactory(){
-
 }

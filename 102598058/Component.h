@@ -10,14 +10,10 @@ public:
 	void setID(int);
 	void setType(string type);
 	void setText(string name);
-	
-	//void setConnections(Component*);
-
 	int getID();
 	string getType();
 	string getText();
 	virtual vector<Component*> getConnections()=0;
-	//vector<Component*> getConnections();
 	virtual void connectTo(Component *component)=0;
 	virtual bool canConnectTo(Component *component)=0;
 private:
@@ -25,6 +21,5 @@ private:
 	string _type;
 	string _text;
 	vector<Component*> connections;
-	//vector<Component*> _connectionsVector;
 };
 #endif

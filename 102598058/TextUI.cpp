@@ -2,7 +2,6 @@
 #include <iostream>
 #include "TextUI.h"
 #include "ERModel.h"
-
 using namespace std;
 //#define WKONDYWTA "What kind of node do you want to add?\n[A]Attribute [E]Entity [R]Relation\n> ";
 TextUI::TextUI(ERModel* model){

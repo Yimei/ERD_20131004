@@ -1,7 +1,6 @@
 #include <string>
 #include "Connector.h"
 using namespace std;
-
 Connector::Connector():Component(){
 	_nodeOneConnectionId=0;
 	_nodeTwoConnectionId=0;
@@ -15,7 +14,6 @@ vector<Component*> Connector::getConnections()
 	return connectedComponent;
 }
 void Connector::connectTo(Component* component){
-	//this->setConnections(component);
 }
 bool Connector::canConnectTo(Component* component){
 	return false;
@@ -29,5 +27,4 @@ int Connector::getNodeTwoConnectionId()
 	return _nodeTwoConnectionId;
 }
 Connector::~Connector(){
-
 }
